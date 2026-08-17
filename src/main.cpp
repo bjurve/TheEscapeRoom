@@ -2,34 +2,70 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include <iostream>
+#include <thread>
+#include <chrono>
+#include <cmath>
+#include <random>
+
+
+
+
+sf::Vector2f randomCoordinates(float maxX, float maxY)
+{
+	static std::random_device rd;
+	static std::mt19937 engine(rd());
+
+	std::uniform_real_distribution<float> distX(0.0f, maxX - 20.0f);
+	std::uniform_real_distribution<float> distY(0.0f, maxY - 20.0f);
+	
+	return sf::Vector2f(distX(engine), distY(engine));
+
+}
 
 int main()
 {
     //Konstruktor for Spillvindu
 	unsigned int width = 1500;
 	unsigned int height = 800;	
-	sf::RenderWindow window( sf::VideoMode( sf::Vector2u(width, height)), "Lets Build Some Shit!");
+	sf::RenderWindow window( sf::VideoMode( sf::Vector2u(width, height)), "Lets Build Some Shit!", sf::Style::Default);
+	window.setFramerateLimit(120);
 
 	//Objekt (Sprite)
 	sf::Texture texture("C:/Users/sondr/OneDrive/Desktop/Git_Projects/Game_1/Assets/PNG/sun.png");
 	sf::Sprite sprite(texture);
 	sprite.setPosition({800.f,400.f});
 	sprite.setScale({0.06f,0.06f});
+	
 
 	//Objekt (Sirkel)
 	sf::CircleShape circle(50.f);
 	circle.setOrigin(circle.getGeometricCenter());
 	circle.setPosition({width / 4.0f, height / 2.0f} );
-	
-
-
-	
-	
+	sf::FloatRect circleBound = circle.getGlobalBounds();
+    circle.setFillColor(sf::Color::Green);
+		
 
 	//Spilltekst
-	sf::Font font("C:/Users/sondr/OneDrive/Desktop/Git_Projects/Game_1/Assets/FONT/Doug-Regular.ttf.otf");
+	sf::Font font("C:/Users/sondr/OneDrive/Desktop/Git_Projects/Game_1/Assets/FONT/Super_Bouncer.ttf");
 	sf::Text text(font);
 	text.setPosition({10.f,50.f});
+	text.setFillColor(sf::Color::Red);
+
+
+
+	//Game-states og variable for current state
+	enum class gameState{Menu, Playing, GameOver};
+	gameState currentGameState = gameState::Menu;
+
+	//Score count
+	int count = 0;
+
+	
+	//Nedtelling til Game Over
+	sf::Clock countDown;
+	float countDownDuration = 10.0f;
+
+	
 
 	//Game Loop
 	while ( window.isOpen() )
@@ -51,29 +87,201 @@ int main()
 
 		
 
-
-
-
-	    //Rydder og fjerner forrige frame
+	    //Rydder og fjerner forrige frame------------------------------------
 		window.clear(sf::Color::Black);
 
 
 
-        //tegner på neste frame
- 		//window.draw( sprite );
-		window.draw(circle);
-		circle.move({5.f,0.f});
+        //-----------------Tegning av neste frame--------------------------------
+
+        //Tegning av Game Menu
+		if(currentGameState == gameState::Menu)
+		{
+			countDown.reset();
+			//Knapp for å starte spill
+			sf::RectangleShape startGame;
+			startGame.setOrigin({300.0f,25.0f});
+			startGame.setPosition({750.0f,200.0f});
+			startGame.setSize({600.0f,50.0f});
+
+			sf::Text startGameText(font);
+			startGameText.setString("START GAME");
+			startGameText.setCharacterSize(30);
+			startGameText.setFillColor(sf::Color::Red);
+
+			sf::FloatRect sGTBound = startGameText.getGlobalBounds();
+			startGameText.setOrigin({sGTBound.position.x + sGTBound.size.x / 2,sGTBound.position.y + sGTBound.size.y / 2});
+			startGameText.setPosition(startGame.getPosition());
 
 
-		text.setString("Kjøøøøh!");
-		text.setCharacterSize(50);
-		text.setFillColor(sf::Color::Red);
-		text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+			//Input boks for spillernavn
+			sf::RectangleShape inputBox;
+			inputBox.setOrigin({300.0f,25.0f});
+			inputBox.setPosition({750.0f, 280.0f});
+			inputBox.setSize({600.0f,50.0f});
+
+			//Valg av karakterfarge
+
+
+			//startGame Logikk
+			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+			sf::Vector2f mousdPosF(mousePos);
+			sf::Mouse::Button mousButton = sf::Mouse::Button::Left;
+
+			if(startGame.getGlobalBounds().contains(mousdPosF) && sf::Mouse::isButtonPressed(mousButton))
+			{
+				currentGameState = gameState::Playing;
+			};
+
+			
+			window.draw(startGame);
+			window.draw(startGameText);
+			window.draw(inputBox);
+
+		}
+        //Tegning av selve Spillet
+		else if(currentGameState == gameState::Playing)
+		{
+
+			//Nedtelling sjekk og tekst
+			sf::Time timeElapsed = countDown.getElapsedTime();
+			float time = timeElapsed.asSeconds();
+
+			sf::Text CountDownText(font);
+			float timeleft = countDownDuration - time;
+			int timeleftINT = static_cast<int>(std::round(timeleft));
+		
+			CountDownText.setString("Time Left: " + std::to_string(timeleftINT));
+			sf::FloatRect timeBound = CountDownText.getGlobalBounds();
+			CountDownText.setOrigin({timeBound.position.x + timeBound.size.x / 2 , timeBound.position.y + timeBound.size.y / 2});
+			CountDownText.setPosition({750.0f, 20.0f});
+			CountDownText.setCharacterSize(50);
+
+
+			countDown.start();
+			//SunBurnCount Tekst 
+			sf::Text SunBurnCount(font);
+			SunBurnCount.setString("Count: " + std::to_string(count));
+
+			
+
+			
+ 			
+
+			//********************************Diverse Logikk
+			//Styring av karakter med piltaster (gjør om til funskjon senere)
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)){circle.move({-5.0f,0.0f});}
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)){circle.move({5.0f,0.0f});}
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)){circle.move({0.0f,-5.0f});}
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)){circle.move({0.0f,5.0f});}
+
+
+			//KarakterBorder + VinduBorder-logikk
+			sf::FloatRect circleBound = circle.getGlobalBounds();		
+			if(circleBound.position.x < 0){circle.move({5.0f,0.0f});}                          
+			if(circleBound.position.x + circleBound.size.x > width){circle.move({-5.0f,0.0f});}
+			if(circleBound.position.y < 0){circle.move({0.0f,5.0f});}
+			if(circleBound.position.y + circleBound.size.y > height){circle.move({0.0f,-5.0f});}
+
+
+
+			//KarakterBorder + SpriteBorder-logikk
+			circle.setFillColor(sf::Color::Green);
+
+			if(sprite.getGlobalBounds().findIntersection(circleBound))
+			{	
+			circle.setFillColor(sf::Color::Red);
+			count = count + 1;
+			circle.setPosition({width / 4.0f, height / 2.0f});
+			sprite.setPosition(randomCoordinates(1500.0f, 800.0f));
+			}			
 
 
 
 
-		//Render ny frame
+            // sjekker om nedtelling har gått ut og sender spiller til Game Over om den har
+			if(time >= countDownDuration)
+			{
+				currentGameState = gameState::GameOver; 
+			}
+
+
+			//Tegning av Nedtelling
+
+            //tegner
+			window.draw(sprite);
+			window.draw(circle);
+			window.draw(SunBurnCount);
+			window.draw(CountDownText);
+	
+
+
+		}
+		//Tegning av Game Over
+		else if(currentGameState == gameState::GameOver)
+		{
+
+			sf::Text GameOverText(font);
+			GameOverText.setString("GAME OVER!!!!");
+			GameOverText.setFillColor(sf::Color::White);
+			GameOverText.setCharacterSize(100);
+			sf::FloatRect gotBound = GameOverText.getGlobalBounds();
+			GameOverText.setOrigin({gotBound.position.x + gotBound.size.x / 2, gotBound.position.y + gotBound.size.y / 2});
+			GameOverText.setPosition({750.0f, 200.0f});
+
+			sf::Text FinalScore(font);
+			FinalScore.setString("Youre Score: " + std::to_string(count));
+			FinalScore.setFillColor(sf::Color::White);
+			FinalScore.setCharacterSize(70);
+			sf::FloatRect scoreBound = FinalScore.getGlobalBounds();
+			FinalScore.setOrigin({scoreBound.position.x + scoreBound.size.x / 2, scoreBound.position.y + scoreBound.size.y / 2});
+			FinalScore.setPosition({750.0f, 400.0f});
+
+			//restart Game Logikk
+			sf::RectangleShape tryAgainButton;
+			tryAgainButton.setSize({600.0f,50.0f});
+			tryAgainButton.setOrigin({300.0f,25.0f});
+			tryAgainButton.setPosition({750.0f,600.0f});
+			
+
+			sf::Text tryAgainText(font);
+			tryAgainText.setString("Try Again Noob");
+			tryAgainText.setCharacterSize(30);
+		    tryAgainText.setFillColor(sf::Color::Red);
+
+			sf::FloatRect tATBound = tryAgainText.getGlobalBounds();
+			tryAgainText.setOrigin({tATBound.position.x + tATBound.size.x / 2, tATBound.position.y + tATBound.size.y / 2});
+			tryAgainText.setPosition(tryAgainButton.getPosition());
+
+
+			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+			sf::Vector2f mousdPosF(mousePos);
+			sf::Mouse::Button mousButton = sf::Mouse::Button::Left;
+
+			if(tryAgainButton.getGlobalBounds().contains(mousdPosF) && sf::Mouse::isButtonPressed(mousButton))
+			{
+				currentGameState = gameState::Playing;
+				countDown.reset();
+				count = 0;
+			};
+
+			
+			
+
+
+			window.draw(GameOverText);
+			window.draw(FinalScore);
+			window.draw(tryAgainButton);
+			window.draw(tryAgainText);
+
+		}
+	
+
+
+
+
+
+		//Render ny frame------------------------------
 		window.display();
 	}
 }
