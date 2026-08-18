@@ -6,6 +6,9 @@
 #include <chrono>
 #include <cmath>
 #include <random>
+#include "../include/player.hpp"
+#include "../include/helpFunctions.hpp"
+#include "../include/button.hpp"
 
 
 
@@ -15,8 +18,8 @@ sf::Vector2f randomCoordinates(float maxX, float maxY)
 	static std::random_device rd;
 	static std::mt19937 engine(rd());
 
-	std::uniform_real_distribution<float> distX(0.0f, maxX - 20.0f);
-	std::uniform_real_distribution<float> distY(0.0f, maxY - 20.0f);
+	std::uniform_real_distribution<float> distX(0.0f, maxX - 200.0f);
+	std::uniform_real_distribution<float> distY(0.0f, maxY - 50.0f);
 	
 	return sf::Vector2f(distX(engine), distY(engine));
 
@@ -31,22 +34,27 @@ int main()
 	window.setFramerateLimit(120);
 
 	//Objekt (Sprite)
-	sf::Texture texture("C:/Users/sondr/OneDrive/Desktop/Git_Projects/Game_1/Assets/PNG/sun.png");
+	//sf::Texture texture("C:/Users/sondr/OneDrive/Desktop/Git_Projects/Game_1/Assets/PNG/sun.png");
+	sf::Texture texture("Assets/PNG/sun.png");
 	sf::Sprite sprite(texture);
 	sprite.setPosition({800.f,400.f});
 	sprite.setScale({0.06f,0.06f});
 	
 
-	//Objekt (Sirkel)
-	sf::CircleShape circle(50.f);
-	circle.setOrigin(circle.getGeometricCenter());
-	circle.setPosition({width / 4.0f, height / 2.0f} );
-	sf::FloatRect circleBound = circle.getGlobalBounds();
-    circle.setFillColor(sf::Color::Green);
-		
+	//Sirkel Objekter
+	Player bob("bob",sf::Color::Red);
+	bob.buildPlayer();
+
+	//Knapp Objekter
+	Button b(ButtonSize::small, sf::Color::Green, {200.0f,200.0f});
+	b.buildButton();
+
+	Button b2(ButtonSize::medium, sf::Color::Yellow, {200.0f,400.0f});
+	b2.buildButton();
 
 	//Spilltekst
-	sf::Font font("C:/Users/sondr/OneDrive/Desktop/Git_Projects/Game_1/Assets/FONT/Super_Bouncer.ttf");
+	//sf::Font font("C:/Users/sondr/OneDrive/Desktop/Git_Projects/Game_1/Assets/FONT/Super_Bouncer.ttf");
+	sf::Font font("Assets/FONT/Super_Bouncer.ttf");
 	sf::Text text(font);
 	text.setPosition({10.f,50.f});
 	text.setFillColor(sf::Color::Red);
@@ -120,7 +128,8 @@ int main()
 			inputBox.setPosition({750.0f, 280.0f});
 			inputBox.setSize({600.0f,50.0f});
 
-			//Valg av karakterfarge
+			
+
 
 
 			//startGame Logikk
@@ -137,6 +146,8 @@ int main()
 			window.draw(startGame);
 			window.draw(startGameText);
 			window.draw(inputBox);
+			b.draw(window);
+			b2.draw(window);
 
 		}
         //Tegning av selve Spillet
@@ -168,31 +179,14 @@ int main()
 			
  			
 
-			//********************************Diverse Logikk
-			//Styring av karakter med piltaster (gjør om til funskjon senere)
-			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)){circle.move({-5.0f,0.0f});}
-			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)){circle.move({5.0f,0.0f});}
-			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)){circle.move({0.0f,-5.0f});}
-			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)){circle.move({0.0f,5.0f});}
-
-
-			//KarakterBorder + VinduBorder-logikk
-			sf::FloatRect circleBound = circle.getGlobalBounds();		
-			if(circleBound.position.x < 0){circle.move({5.0f,0.0f});}                          
-			if(circleBound.position.x + circleBound.size.x > width){circle.move({-5.0f,0.0f});}
-			if(circleBound.position.y < 0){circle.move({0.0f,5.0f});}
-			if(circleBound.position.y + circleBound.size.y > height){circle.move({0.0f,-5.0f});}
-
-
-
+			
+			bob.playerMovement();
+      
 			//KarakterBorder + SpriteBorder-logikk
-			circle.setFillColor(sf::Color::Green);
-
-			if(sprite.getGlobalBounds().findIntersection(circleBound))
+			if(sprite.getGlobalBounds().findIntersection(bob.getPlayer().getGlobalBounds()))
 			{	
-			circle.setFillColor(sf::Color::Red);
 			count = count + 1;
-			circle.setPosition({width / 4.0f, height / 2.0f});
+			bob.getPlayer().setPosition({width / 4.0f, height / 2.0f});
 			sprite.setPosition(randomCoordinates(1500.0f, 800.0f));
 			}			
 
@@ -210,7 +204,7 @@ int main()
 
             //tegner
 			window.draw(sprite);
-			window.draw(circle);
+			bob.draw(window);
 			window.draw(SunBurnCount);
 			window.draw(CountDownText);
 	

@@ -6,19 +6,25 @@
 class Player {
 public:
 
-Player(std::string playerName, std::string playerColor):playerName{playerName}, playerColor{playerColor}, player(50.0f){};
+Player(std::string playerName, sf::Color playerColor):
+playerName{playerName}, playerColor{playerColor}{};
 
-sf::Color getPlayerColor(std::string color);
 
 void playerMovement();
-void playerGrow();
-void playerShrink();
+void playerGrow(Player player);
+void playerShrink(Player player);
 void buildPlayer();
+
+void draw(sf::RenderWindow& window);
+
+
+sf::CircleShape getPlayer()const;
 
 
 private:
-std::string playerColor;
-std::string playerName;
+sf::Color playerColor;
+std::string playerName;;
+
 sf::CircleShape player;
 
 
