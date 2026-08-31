@@ -2,7 +2,7 @@
 #include "../include/helpFunctions.hpp"
 
 
-
+//Bygger spiller med div. egenskaper
 void Player::buildPlayer()
 {
     this->player.setFillColor(this->playerColor);

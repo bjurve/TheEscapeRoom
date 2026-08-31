@@ -3,7 +3,7 @@
 #include "../include/helpFunctions.hpp"
 #include "../include/button.hpp"
 
-
+//bygger knapp med div. egenskaper
 void Button::buildButton()
 {
 
@@ -29,6 +29,7 @@ void Button::buildButton()
     this->button.setFillColor(buttonColor);
     this->button.setOrigin(getOriginCenterButton(*this));
     this->button.setPosition({buttonCoordinates});
+
 }
 
 void Button::draw(sf::RenderWindow& window)

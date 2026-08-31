@@ -9,6 +9,7 @@
 #include "../include/player.hpp"
 #include "../include/helpFunctions.hpp"
 #include "../include/button.hpp"
+#include "../include/screenText.hpp"
 
 
 
@@ -33,6 +34,20 @@ int main()
 	sf::RenderWindow window( sf::VideoMode( sf::Vector2u(width, height)), "Lets Build Some Shit!", sf::Style::Default);
 	window.setFramerateLimit(120);
 
+	//Spilltekst
+	//sf::Font font("C:/Users/sondr/OneDrive/Desktop/Git_Projects/Game_1/Assets/FONT/Super_Bouncer.ttf");
+	sf::Font font;
+	if(!font.openFromFile("Assets/FONT/Super_Bouncer.ttf"))
+	{
+		std::cerr << "Failed to load Font!!!" << std::endl;
+		return -1;
+	}
+
+
+	sf::Text text(font);
+	text.setPosition({10.f,50.f});
+	text.setFillColor(sf::Color::Red);
+
 	//Objekt (Sprite)
 	//sf::Texture texture("C:/Users/sondr/OneDrive/Desktop/Git_Projects/Game_1/Assets/PNG/sun.png");
 	sf::Texture texture("Assets/PNG/sun.png");
@@ -45,20 +60,12 @@ int main()
 	Player bob("bob",sf::Color::Red);
 	bob.buildPlayer();
 
-	//Knapp Objekter
-	Button b(ButtonSize::small, sf::Color::Green, {200.0f,200.0f});
-	b.buildButton();
 
-	Button b2(ButtonSize::medium, sf::Color::Yellow, {200.0f,400.0f});
-	b2.buildButton();
+	
 
-	//Spilltekst
-	//sf::Font font("C:/Users/sondr/OneDrive/Desktop/Git_Projects/Game_1/Assets/FONT/Super_Bouncer.ttf");
-	sf::Font font("Assets/FONT/Super_Bouncer.ttf");
-	sf::Text text(font);
-	text.setPosition({10.f,50.f});
-	text.setFillColor(sf::Color::Red);
-
+	
+	
+	
 
 
 	//Game-states og variable for current state
@@ -102,55 +109,49 @@ int main()
 
         //-----------------Tegning av neste frame--------------------------------
 
-        //Tegning av Game Menu
+        //Tegning av Game Menu-------------------------------------------------------------------------------------------------
 		if(currentGameState == gameState::Menu)
 		{
 			countDown.reset();
-			//Knapp for å starte spill
-			sf::RectangleShape startGame;
-			startGame.setOrigin({300.0f,25.0f});
-			startGame.setPosition({750.0f,200.0f});
-			startGame.setSize({600.0f,50.0f});
 
-			sf::Text startGameText(font);
-			startGameText.setString("START GAME");
-			startGameText.setCharacterSize(30);
-			startGameText.setFillColor(sf::Color::Red);
 
-			sf::FloatRect sGTBound = startGameText.getGlobalBounds();
-			startGameText.setOrigin({sGTBound.position.x + sGTBound.size.x / 2,sGTBound.position.y + sGTBound.size.y / 2});
-			startGameText.setPosition(startGame.getPosition());
+			//StartGame knapp
+			Button startGame(ButtonSize::medium, sf::Color::White,{750.0f,200.0f});
+			startGame.buildButton();
+			screenText startGameText(font, "START GAME", sf::Color::Red, 30);
+			startGameText.buildText();
+
+			startGame.draw(window);
+			mergeTextButton(startGameText, startGame);
+			startGameText.draw(window);
+
 
 
 			//Input boks for spillernavn
-			sf::RectangleShape inputBox;
-			inputBox.setOrigin({300.0f,25.0f});
-			inputBox.setPosition({750.0f, 280.0f});
-			inputBox.setSize({600.0f,50.0f});
-
+			Button inputBox(ButtonSize::medium, sf::Color::White, {750.0f, 280.0f});
+			inputBox.buildButton();
+			inputBox.draw(window);
 			
 
 
 
 			//startGame Logikk
-			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-			sf::Vector2f mousdPosF(mousePos);
-			sf::Mouse::Button mousButton = sf::Mouse::Button::Left;
+			//sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+			//sf::Vector2f mousdPosF(mousePos);
+			//sf::Mouse::Button mousButton = sf::Mouse::Button::Left;
 
-			if(startGame.getGlobalBounds().contains(mousdPosF) && sf::Mouse::isButtonPressed(mousButton))
-			{
-				currentGameState = gameState::Playing;
-			};
-
+			//if(startGame.getButton().getGlobalBounds().contains(mousdPosF) && sf::Mouse::isButtonPressed(mousButton))
+			//{
+			//	currentGameState = gameState::Playing;
+			//};
+			if(buttonClicked(window, startGame)){currentGameState = gameState::Playing;}
 			
-			window.draw(startGame);
-			window.draw(startGameText);
-			window.draw(inputBox);
-			b.draw(window);
-			b2.draw(window);
+			
+		
+		
 
 		}
-        //Tegning av selve Spillet
+        //Tegning av selve Spillet--------------------------------------------------------------------------------------------
 		else if(currentGameState == gameState::Playing)
 		{
 
@@ -211,7 +212,7 @@ int main()
 
 
 		}
-		//Tegning av Game Over
+		//Tegning av Game Over----------------------------------------------------------------------------------------------------
 		else if(currentGameState == gameState::GameOver)
 		{
 

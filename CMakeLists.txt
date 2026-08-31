@@ -13,7 +13,7 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(main src/main.cpp src/player.cpp src/button.cpp src/helpFunctions.cpp)
+add_executable(main src/main.cpp src/player.cpp src/button.cpp src/helpFunctions.cpp src/screenText.cpp)
 target_include_directories(main PRIVATE include)
 
 set_target_properties(main PROPERTIES
