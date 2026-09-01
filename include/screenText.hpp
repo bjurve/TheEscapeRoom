@@ -12,6 +12,9 @@ class screenText
     
     void buildText();
     void draw(sf::RenderWindow& window);
+    void setPosition(sf::Vector2f pos);
+
+    void updateText(std::string newText);
     
     sf::Text& getText();
 

@@ -31,8 +31,7 @@ void mergeTextButton(screenText& text, Button button)
     text.getText().setPosition(button.getButton().getPosition());
 }
 
-
-
+//Returnerer True hvis knapp trykkes på
 bool buttonClicked(sf::Window& window, Button button)
 {
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);

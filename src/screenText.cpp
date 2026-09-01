@@ -8,8 +8,6 @@
 
 void screenText::buildText()
 {
-
-
     text.setString(theText);
     text.setFillColor(colorText);
     text.setCharacterSize(textSize);
@@ -18,13 +16,14 @@ void screenText::buildText()
 }
 
 
-
-
 sf::Text& screenText::getText(){return text;}
-
 
 void screenText::draw(sf::RenderWindow& window)
 {   
     window.draw(this->text);
 }
+
+void screenText::setPosition(sf::Vector2f pos){text.setPosition({pos});}
+
+void screenText::updateText(std::string newText){text.setString(newText);}
 

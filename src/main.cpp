@@ -10,6 +10,7 @@
 #include "../include/helpFunctions.hpp"
 #include "../include/button.hpp"
 #include "../include/screenText.hpp"
+#include "../include/countDown.hpp"
 
 
 
@@ -62,25 +63,17 @@ int main()
 
 
 	
-
-	
-	
-	
+	//initierer og starter klokke
+	countDown countDown(10.0f);
 
 
 	//Game-states og variable for current state
-	enum class gameState{Menu, Playing, GameOver};
+	enum class gameState{Menu, room1, room2, GameOver};
 	gameState currentGameState = gameState::Menu;
 
 	//Score count
 	int count = 0;
 
-	
-	//Nedtelling til Game Over
-	sf::Clock countDown;
-	float countDownDuration = 10.0f;
-
-	
 
 	//Game Loop
 	while ( window.isOpen() )
@@ -100,182 +93,141 @@ int main()
 
 		}
 
-		
 
 	    //Rydder og fjerner forrige frame------------------------------------
 		window.clear(sf::Color::Black);
 
 
 
-        //-----------------Tegning av neste frame--------------------------------
-
         //Tegning av Game Menu-------------------------------------------------------------------------------------------------
 		if(currentGameState == gameState::Menu)
 		{
-			countDown.reset();
-
+			//countDown.reset();
+			countDown.restart();
 
 			//StartGame knapp
 			Button startGame(ButtonSize::medium, sf::Color::White,{750.0f,200.0f});
 			startGame.buildButton();
+			startGame.draw(window);
+
 			screenText startGameText(font, "START GAME", sf::Color::Red, 30);
 			startGameText.buildText();
-
-			startGame.draw(window);
 			mergeTextButton(startGameText, startGame);
 			startGameText.draw(window);
 
-
-
-			//Input boks for spillernavn
-			Button inputBox(ButtonSize::medium, sf::Color::White, {750.0f, 280.0f});
-			inputBox.buildButton();
-			inputBox.draw(window);
+			//starter spill hvis startGame er trykket
+			if(buttonClicked(window, startGame)){currentGameState = gameState::room1;}
 			
-
-
-
-			//startGame Logikk
-			//sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-			//sf::Vector2f mousdPosF(mousePos);
-			//sf::Mouse::Button mousButton = sf::Mouse::Button::Left;
-
-			//if(startGame.getButton().getGlobalBounds().contains(mousdPosF) && sf::Mouse::isButtonPressed(mousButton))
-			//{
-			//	currentGameState = gameState::Playing;
-			//};
-			if(buttonClicked(window, startGame)){currentGameState = gameState::Playing;}
-			
-			
-		
-		
-
+	
 		}
-        //Tegning av selve Spillet--------------------------------------------------------------------------------------------
-		else if(currentGameState == gameState::Playing)
+        //ROOM 1--------------------------------------------------------------------------------------------
+		else if(currentGameState == gameState::room1)
 		{
-
-			//Nedtelling sjekk og tekst
-			sf::Time timeElapsed = countDown.getElapsedTime();
-			float time = timeElapsed.asSeconds();
-
-			sf::Text CountDownText(font);
-			float timeleft = countDownDuration - time;
-			int timeleftINT = static_cast<int>(std::round(timeleft));
-		
-			CountDownText.setString("Time Left: " + std::to_string(timeleftINT));
-			sf::FloatRect timeBound = CountDownText.getGlobalBounds();
-			CountDownText.setOrigin({timeBound.position.x + timeBound.size.x / 2 , timeBound.position.y + timeBound.size.y / 2});
-			CountDownText.setPosition({750.0f, 20.0f});
-			CountDownText.setCharacterSize(50);
-
-
+			//Countdown før GameOver
 			countDown.start();
+			std::string timeLeft = countDown.printCountDown();
+			std::cout << timeLeft << "\n";
+
+			screenText countDownText(font, timeLeft, sf::Color::White, 50);
+			countDownText.buildText();
+			countDownText.setPosition({750.0f,20.0f});
+			countDownText.draw(window);
+			countDownText.updateText(timeLeft);
+
+			if(countDown.isTimerOver())
+			{
+				currentGameState = gameState::GameOver;
+				countDown.reset();
+			}
+
+		    if(count >= 5)
+			{
+				currentGameState = gameState::room2;
+				countDown.reset();
+			}
+
+
+
 			//SunBurnCount Tekst 
 			sf::Text SunBurnCount(font);
 			SunBurnCount.setString("Count: " + std::to_string(count));
 
-			
-
-			
- 			
-
-			
+		
 			bob.playerMovement();
       
 			//KarakterBorder + SpriteBorder-logikk
 			if(sprite.getGlobalBounds().findIntersection(bob.getPlayer().getGlobalBounds()))
 			{	
-			count = count + 1;
-			bob.getPlayer().setPosition({width / 4.0f, height / 2.0f});
-			sprite.setPosition(randomCoordinates(1500.0f, 800.0f));
+				count = count + 1;
+				bob.getPlayer().setPosition({width / 4.0f, height / 2.0f});
+				sprite.setPosition(randomCoordinates(1500.0f, 800.0f));
 			}			
 
 
 
 
-            // sjekker om nedtelling har gått ut og sender spiller til Game Over om den har
-			if(time >= countDownDuration)
-			{
-				currentGameState = gameState::GameOver; 
-			}
-
-
-			//Tegning av Nedtelling
-
             //tegner
 			window.draw(sprite);
 			bob.draw(window);
 			window.draw(SunBurnCount);
-			window.draw(CountDownText);
+		}
 	
 
+		  
+	    
+
+		// //ROOM 2 ---------------------------------------------------------------------------------------------------------------
+		else if(currentGameState == gameState::room2)
+		{
+
+			screenText room2(font, "ROOM 2", sf::Color::Green, 50);
+			room2.buildText();
+			room2.setPosition({750.0f, 100.0f});
+			room2.draw(window);
+
+
+
+
+
+			bob.draw(window);
+			bob.playerMovement();
 
 		}
+
 		//Tegning av Game Over----------------------------------------------------------------------------------------------------
 		else if(currentGameState == gameState::GameOver)
 		{
 
-			sf::Text GameOverText(font);
-			GameOverText.setString("GAME OVER!!!!");
-			GameOverText.setFillColor(sf::Color::White);
-			GameOverText.setCharacterSize(100);
-			sf::FloatRect gotBound = GameOverText.getGlobalBounds();
-			GameOverText.setOrigin({gotBound.position.x + gotBound.size.x / 2, gotBound.position.y + gotBound.size.y / 2});
-			GameOverText.setPosition({750.0f, 200.0f});
+	        //GameOver Tekst
+			screenText gameOverText(font, "GAME OVER!!!!", sf::Color::White, 100);
+			gameOverText.buildText();
+			gameOverText.setPosition({750.0f, 200.0f});
+			gameOverText.draw(window);
 
-			sf::Text FinalScore(font);
-			FinalScore.setString("Youre Score: " + std::to_string(count));
-			FinalScore.setFillColor(sf::Color::White);
-			FinalScore.setCharacterSize(70);
-			sf::FloatRect scoreBound = FinalScore.getGlobalBounds();
-			FinalScore.setOrigin({scoreBound.position.x + scoreBound.size.x / 2, scoreBound.position.y + scoreBound.size.y / 2});
-			FinalScore.setPosition({750.0f, 400.0f});
+			//Finale Score Tekst
+			screenText finaleScore(font, "Youre Score: " + std::to_string(count), sf::Color::White, 70);
+			finaleScore.buildText();
+			finaleScore.setPosition({750.0f, 400.0f});
+			finaleScore.draw(window);
 
-			//restart Game Logikk
-			sf::RectangleShape tryAgainButton;
-			tryAgainButton.setSize({600.0f,50.0f});
-			tryAgainButton.setOrigin({300.0f,25.0f});
-			tryAgainButton.setPosition({750.0f,600.0f});
-			
+			//Restart game Knapp,Tekst og logikk
+			Button tryAgainButton(ButtonSize::medium, sf::Color::White, {750.0f, 600.0f});
+			tryAgainButton.buildButton();
+			tryAgainButton.draw(window);
 
-			sf::Text tryAgainText(font);
-			tryAgainText.setString("Try Again Noob");
-			tryAgainText.setCharacterSize(30);
-		    tryAgainText.setFillColor(sf::Color::Red);
+			screenText tryAgainText(font, "Try Again", sf::Color::Red, 30);
+			tryAgainText.buildText();
+			mergeTextButton(tryAgainText,tryAgainButton);
+			tryAgainText.draw(window);
 
-			sf::FloatRect tATBound = tryAgainText.getGlobalBounds();
-			tryAgainText.setOrigin({tATBound.position.x + tATBound.size.x / 2, tATBound.position.y + tATBound.size.y / 2});
-			tryAgainText.setPosition(tryAgainButton.getPosition());
-
-
-			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-			sf::Vector2f mousdPosF(mousePos);
-			sf::Mouse::Button mousButton = sf::Mouse::Button::Left;
-
-			if(tryAgainButton.getGlobalBounds().contains(mousdPosF) && sf::Mouse::isButtonPressed(mousButton))
+			if(buttonClicked(window, tryAgainButton))
 			{
-				currentGameState = gameState::Playing;
-				countDown.reset();
-				count = 0;
-			};
-
-			
-			
-
-
-			window.draw(GameOverText);
-			window.draw(FinalScore);
-			window.draw(tryAgainButton);
-			window.draw(tryAgainText);
-
+				currentGameState = gameState::room1;
+			 	//countDown.reset();
+			 	count = 0;
+			}
 		}
 	
-
-
-
-
-
 		//Render ny frame------------------------------
 		window.display();
 	}
