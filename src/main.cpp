@@ -133,11 +133,11 @@ int main()
 			countDown.restart();
 
 			//StartGame knapp
-			Button startGame(ButtonSize::medium, sf::Color::White,{750.0f,200.0f});
+			Button startGame(ButtonSize::medium, sf::Color::White,{750.0f,400.0f});
 			startGame.buildButton();
 			startGame.draw(window);
 
-			screenText startGameText(font, "START GAME", sf::Color::Red, 30);
+			screenText startGameText(font, "START GAME", sf::Color::Red, 50);
 			startGameText.buildText();
 			mergeTextButton(startGameText, startGame);
 			startGameText.draw(window);
@@ -159,13 +159,24 @@ int main()
 			//Countdown før GameOver
 			countDown.start();
 			std::string timeLeft = countDown.printCountDown();
-			std::cout << timeLeft << "\n";
 
-			screenText countDownText(font, timeLeft, sf::Color::White, 50);
+
+			screenText countDownText(font, timeLeft, sf::Color::Cyan, 120);
 			countDownText.buildText();
-			countDownText.setPosition({750.0f,20.0f});
+			countDownText.setPosition({1200.0f,400.0f});
 			countDownText.draw(window);
 			countDownText.updateText(timeLeft);
+
+			screenText room1(font, "ROOM 1", sf::Color::Red, 80);
+			room1.buildText();
+			room1.setPosition({750.0f, 50.0f});
+			room1.draw(window);
+
+			screenText infoRoom1(font, "Collect 5 Suns before time runs out!!!!! \n HURRY!", sf::Color::Red, 50);
+			infoRoom1.buildText();
+			infoRoom1.setPosition({500.0, 300.0});
+			infoRoom1.draw(window);
+
 
 			if(countDown.isTimerOver())
 			{
@@ -260,8 +271,13 @@ int main()
 			r2CountDown.setPosition({750.0, 650.0});
 			r2CountDown.draw(window);
 
+			screenText room3(font, "ROOM 3", sf::Color::Magenta, 80);
+			room3.buildText();
+			room3.setPosition({750.0f, 50.0f});
+			room3.draw(window);
+
 			//Mattespørsmål som MÅ besvares riktig for å komme videre
-			screenText math(font, "What is 7*7+8+11!!??", sf::Color::Yellow, 70);
+			screenText math(font, "What is 7*7+8+11!!??", sf::Color::Magenta, 70);
 			math.buildText();
 			math.setPosition({750.0,200.0});
 			math.draw(window);
