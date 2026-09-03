@@ -9,7 +9,6 @@ enum class ButtonSize{
 };
 
 
-
 class Button{
 
     public:
@@ -21,10 +20,8 @@ class Button{
     void buildButton();
     void draw(sf::RenderWindow& window);
 
-
-
-    sf::RectangleShape getButton()const;
-
+    sf::RectangleShape& getButton();
+    const sf::RectangleShape& getButtonConst()const;
 
     private:
     sf::RectangleShape button;
