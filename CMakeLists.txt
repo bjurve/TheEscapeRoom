@@ -13,14 +13,15 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(main src/main.cpp src/player.cpp src/button.cpp src/helpFunctions.cpp src/screenText.cpp src/countDown.cpp)
+add_executable(main src/main.cpp src/player.cpp src/button.cpp src/helpFunctions.cpp
+src/screenText.cpp src/countDown.cpp src/character.cpp src/zombie.cpp)
 target_include_directories(main PRIVATE include)
 
 set_target_properties(main PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     )
 target_compile_features(main PRIVATE cxx_std_17)
-target_link_libraries(main PRIVATE SFML::Graphics)
+target_link_libraries(main PRIVATE SFML::Graphics SFML::Audio)
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT main)
 

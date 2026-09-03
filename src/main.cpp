@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -11,69 +12,95 @@
 #include "../include/button.hpp"
 #include "../include/screenText.hpp"
 #include "../include/countDown.hpp"
+#include "../include/character.hpp"
+#include "../include/zombie.hpp"
 
-
-
-
-sf::Vector2f randomCoordinates(float maxX, float maxY)
-{
-	static std::random_device rd;
-	static std::mt19937 engine(rd());
-
-	std::uniform_real_distribution<float> distX(0.0f, maxX - 200.0f);
-	std::uniform_real_distribution<float> distY(0.0f, maxY - 50.0f);
-	
-	return sf::Vector2f(distX(engine), distY(engine));
-
-}
 
 int main()
 {
-    //Konstruktor for Spillvindu
+  	
+ //========================= CONFIGS =========================================================
+
+
+ //-------- General Game Config -------------------------------------------------
+	
+ 
+	//Konstruererfor Spillvindu
 	unsigned int width = 1500;
 	unsigned int height = 800;	
 	sf::RenderWindow window( sf::VideoMode( sf::Vector2u(width, height)), "Lets Build Some Shit!", sf::Style::Default);
 	window.setFramerateLimit(120);
 
-	//Spilltekst
-	//sf::Font font("C:/Users/sondr/OneDrive/Desktop/Git_Projects/Game_1/Assets/FONT/Super_Bouncer.ttf");
+	//Font for tekst
 	sf::Font font;
 	if(!font.openFromFile("Assets/FONT/Super_Bouncer.ttf"))
 	{
 		std::cerr << "Failed to load Font!!!" << std::endl;
 		return -1;
 	}
+ 
+ 	//Game-states og variable for current state
+	enum class gameState{Menu, room1, room2, room3, GameOver, Victory};
+	gameState currentGameState = gameState::room3;
 
-
-	sf::Text text(font);
-	text.setPosition({10.f,50.f});
-	text.setFillColor(sf::Color::Red);
-
-	//Objekt (Sprite)
-	//sf::Texture texture("C:/Users/sondr/OneDrive/Desktop/Git_Projects/Game_1/Assets/PNG/sun.png");
-	sf::Texture texture("Assets/PNG/sun.png");
-	sf::Sprite sprite(texture);
-	sprite.setPosition({800.f,400.f});
-	sprite.setScale({0.06f,0.06f});
-	
-
-	//Sirkel Objekter
-	Player bob("bob",sf::Color::Red);
-	bob.buildPlayer();
-
-
-	
 	//initierer og starter klokke
 	countDown countDown(10.0f);
 
 
-	//Game-states og variable for current state
-	enum class gameState{Menu, room1, room2, GameOver};
-	gameState currentGameState = gameState::Menu;
+ //-------- Game Meny Config -----------------------------------------------------
 
+
+ //-------- Room 1 Config --------------------------------------------------------
 	//Score count
 	int count = 0;
 
+	//Sirkel Objekt
+	Player bob("bob",sf::Color::Red);
+	bob.buildPlayer();
+
+	//Sol - room1
+	sf::Texture texture("Assets/PNG/sun.png");
+	sf::Sprite sprite(texture);
+	sprite.setPosition({800.f,400.f});
+	sprite.setScale({0.06f,0.06f});
+
+
+ //-------- Room 2 Config --------------------------------------------------------
+
+	//zombie - room2
+	zombie zombie(bob);
+	zombie.buildZombie();
+
+		// //Zombielyd til rom 2
+	// sf::SoundBuffer buffer;
+	// if(!font.openFromFile("Assets/SOUND/zombieSound.wav"))
+	// {
+	// 	std::cerr << "Failed to load Sound!!!" << std::endl;
+	// 	return -1;
+	// }
+
+ //-------- Room 3 Config --------------------------------------------------------
+	//Answer A
+ 	Button answerA(ButtonSize::small,sf::Color::Red, {300.0, 550.0});
+	answerA.buildButton();
+	sf::Vector2f speedA{5.0, 3.0};
+	//Answer B
+	Button answerB(ButtonSize::small,sf::Color::Red, {750.0, 450.0});
+	answerB.buildButton();
+	sf::Vector2f speedB{5.0, 3.0};
+	//Answer C
+	Button answerC(ButtonSize::small,sf::Color::Red, {1200.0, 550.0});
+	answerC.buildButton();
+	sf::Vector2f speedC{5.0, 3.0};
+
+ //-------- Room 4 Config --------------------------------------------------------
+
+ //-------- Game Over Config --------------------------------------------------------
+ 
+ //================================================================================================
+
+
+ //========================= The Game ===========================================================
 
 	//Game Loop
 	while ( window.isOpen() )
@@ -114,6 +141,12 @@ int main()
 			startGameText.buildText();
 			mergeTextButton(startGameText, startGame);
 			startGameText.draw(window);
+
+			screenText goodLuck(font, "Can You Beat Every Room??", sf::Color::Magenta, 50);
+			goodLuck.buildText();
+			goodLuck.setPosition({750.0, 600.0});
+			goodLuck.draw(window);
+
 
 			//starter spill hvis startGame er trykket
 			if(buttonClicked(window, startGame)){currentGameState = gameState::room1;}
@@ -172,25 +205,115 @@ int main()
 			window.draw(SunBurnCount);
 		}
 	
-
-		  
-	    
-
 		// //ROOM 2 ---------------------------------------------------------------------------------------------------------------
 		else if(currentGameState == gameState::room2)
 		{
+			countDown.setCountdown(20.0f);
+			countDown.start();
 
-			screenText room2(font, "ROOM 2", sf::Color::Green, 50);
+			// sf::Sound zombieSound(buffer);
+			// zombieSound.play();
+
+			screenText r2CountDown(font, "You Must Survive For " + countDown.printCountDown() + " seconds!!!", sf::Color::Green, 50);
+			r2CountDown.buildText();
+			r2CountDown.setPosition({400.0, 300.0});
+			r2CountDown.draw(window);
+
+
+			screenText room2(font, "ROOM 2", sf::Color::Green, 80);
 			room2.buildText();
-			room2.setPosition({750.0f, 100.0f});
+			room2.setPosition({750.0f, 50.0f});
 			room2.draw(window);
 
-
-
-
+			
+			
+			zombie.moveLeft();
+			zombie.borderCheck();
+			zombie.draw(window);
 
 			bob.draw(window);
 			bob.playerMovement();
+
+
+			if(countDown.isTimerOver())
+			{
+				currentGameState = gameState::room3;
+				countDown.reset();
+			}
+
+			if(objectIntersect(zombie.getZombie().getCharacter(), bob.getPlayer()))
+			{
+				currentGameState = gameState::GameOver;
+				countDown.reset();
+				zombie.getZombie().getSpeedX() = 5.0;
+			}
+
+		}
+		//ROOM 3 ---------------------------------------------------------------------------------
+		else if(currentGameState == gameState::room3)
+		{
+			//nedtelling
+			countDown.setCountdown(8.0f);
+			countDown.start();
+			screenText r2CountDown(font,countDown.printCountDown(), sf::Color::Magenta, 100);
+			r2CountDown.buildText();
+			r2CountDown.setPosition({750.0, 650.0});
+			r2CountDown.draw(window);
+
+			//Mattespørsmål som MÅ besvares riktig for å komme videre
+			screenText math(font, "What is 7*7+8+11!!??", sf::Color::Yellow, 70);
+			math.buildText();
+			math.setPosition({750.0,200.0});
+			math.draw(window);
+
+			//Svaralternativ A
+			if(objectTouchWindowBorder(answerA.getButton())){speedA = randomFloats(5.0);}
+			answerA.getButton().move(speedA);
+			answerA.draw(window);
+
+			screenText answerAText(font, "is it 72?", sf::Color::Black, 40);
+			answerAText.buildText();
+			mergeTextButton(answerAText, answerA);
+			answerAText.draw(window);
+
+			//Svaralternativ B
+			if(objectTouchWindowBorder(answerB.getButton())){speedB = randomFloats(5.0);}
+			answerB.getButton().move(speedB);
+			answerB.draw(window);
+
+			screenText answerBText(font, "is it 67?", sf::Color::Black, 40);
+			answerBText.buildText();
+			mergeTextButton(answerBText, answerB);
+			answerBText.draw(window);
+
+			//Svaralternativ C
+			if(objectTouchWindowBorder(answerC.getButton())){speedC = randomFloats(5.0);}
+			answerC.getButton().move(speedC);
+			answerC.draw(window);
+
+			screenText answerCText(font, "is it 82?", sf::Color::Black, 40);
+			answerCText.buildText();
+			mergeTextButton(answerCText, answerC);
+			answerCText.draw(window);
+
+
+
+
+			if(countDown.isTimerOver())
+			{
+				currentGameState = gameState::GameOver;
+				countDown.reset();
+			}
+
+			if(buttonClicked(window, answerB) || textClicked(window, answerBText)){currentGameState = gameState::Victory;}
+
+			if(
+				buttonClicked(window, answerA) || textClicked(window, answerAText) ||
+			 	buttonClicked(window, answerC) || textClicked(window, answerCText)) 
+			{currentGameState = gameState::GameOver;}
+
+
+
 
 		}
 
@@ -226,7 +349,19 @@ int main()
 			 	//countDown.reset();
 			 	count = 0;
 			}
+
 		}
+		//Victory -------------------------------------------------------------------------	
+		else if(currentGameState == gameState::Victory)
+		{
+
+			screenText victoryText(font, "CONGRATS \n You Escaped Every Room!!!!", sf::Color::Magenta, 100);
+			victoryText.buildText();
+			victoryText.setPosition({750.0, 400.0});
+			victoryText.draw(window);
+
+		}
+		
 	
 		//Render ny frame------------------------------
 		window.display();

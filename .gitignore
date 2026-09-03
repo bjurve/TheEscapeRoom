@@ -1,6 +1,10 @@
-build
-out
-.cache
-.idea
-.vs
-.vscode
+
+*.out
+*.cache
+*.idea
+*.vs
+
+build/
+*.exe
+*.pdb
+.vscode/
