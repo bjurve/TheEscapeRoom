@@ -9,6 +9,8 @@ void countDown::stop(){clock.stop();};
 void countDown::reset(){clock.reset();}
 void countDown::restart(){clock.restart();};
 
+void countDown::setCountdown(float t){duration = t;}
+
 std::string countDown::printCountDown()
 {
     sf::Time timeElapsed = clock.getElapsedTime();

@@ -12,6 +12,8 @@ class countDown{
     void stop();
     void restart();
     void reset();
+    void setCountdown(float t);
+
     std::string printCountDown();
     
     bool isTimerOver();
@@ -20,7 +22,6 @@ class countDown{
 
     private:
     float duration;
-
     sf::Clock clock;
 
 
