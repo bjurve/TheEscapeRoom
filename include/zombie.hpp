@@ -10,7 +10,7 @@
 class zombie{
     public:
 
-    zombie(Player p):zombieBoi{"Assets/PNG/zombie2.png"},target{p}, mvspeed{1}{};
+    zombie(Player p):zombieBoi{"Assets/PNG/pacBoi.png"},target{p}, mvspeed{1}{};
 
     void buildZombie();
     void draw(sf::RenderWindow& window);

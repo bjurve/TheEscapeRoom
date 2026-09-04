@@ -14,7 +14,7 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 
 add_executable(main src/main.cpp src/player.cpp src/button.cpp src/helpFunctions.cpp
-src/screenText.cpp src/countDown.cpp src/character.cpp src/zombie.cpp)
+src/screenText.cpp src/countDown.cpp src/character.cpp src/zombie.cpp src/wall.cpp)
 target_include_directories(main PRIVATE include)
 
 set_target_properties(main PROPERTIES

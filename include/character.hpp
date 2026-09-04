@@ -9,7 +9,7 @@ class character
 {
     public:
 
-    character(std::string path):skin{path}, sprite{skin}, speedX{5}, speedY{5}{};
+    character(std::string path):skin{path}, sprite{skin}, speedX{3}, speedY{3}{};
 
     void buildCharacter();
     void draw(sf::RenderWindow& window);

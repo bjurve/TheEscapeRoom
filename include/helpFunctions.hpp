@@ -23,6 +23,7 @@ float randomNumber(float n);
 sf::Vector2f getOriginCenterPlayer(const Player& p);
 sf::Vector2f getOriginCenterButton(const Button& b);
 sf::Vector2f getOriginCenterText(screenText& t);
+sf::Vector2f getOriginCenterSprite(sf::Sprite& s);
 
 
 //kombinerer text-objekt med button-objekt
@@ -61,6 +62,13 @@ bool objectTouchWindowBorder(T& t)
 	if(bounds.position.y < 0){t.move({0.0f,5.0f}); return true;}
 	if(bounds.position.y + bounds.size.y > 800.0f){t.move({0.0f,-5.0f}); return true;}
 	return false;
+}
+
+template<typename T>
+sf::Vector2f getOriginCenterObject(T& o)
+{
+    sf::FloatRect bound = o.getGlobalBounds();
+    return {bound.position.x + bound.size.x / 2 , bound.position.y + bound.size.y / 2};
 }
 
 

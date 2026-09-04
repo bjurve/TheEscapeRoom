@@ -1,0 +1,28 @@
+
+room================ Labyrint med Usynlige vegger
+room================ BOSS rooms på rom 10,20,30, osv
+room================ Bounce Ball
+room================ Snake room
+room================
+room================
+room================
+room================
+room================
+room================
+room================
+
+
+mechanic============ plukke opp objekt som permannet øker stats 
+mechanic============ Highscoreliste
+mechanic============ Mulighet for å ha liv
+mechanic============
+mechanic============
+mechanic============
+mechanic============
+mechanic============
+mechanic============
+mechanic============
+mechanic============
+mechanic============
+mechanic============
+mechanic============

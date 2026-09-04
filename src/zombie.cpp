@@ -6,6 +6,7 @@
 void zombie::buildZombie()
 {
     zombieBoi.getCharacter().setScale({0.30f, 0.30f});
+    zombieBoi.getCharacter().setPosition({60.0, 400.0});
 }
 
 void zombie::draw(sf::RenderWindow& window){ window.draw(zombieBoi.getCharacter());}

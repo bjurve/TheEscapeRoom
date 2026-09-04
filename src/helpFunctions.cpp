@@ -68,6 +68,13 @@ sf::Vector2f getOriginCenterText(screenText& t)
     return {bound.position.x + bound.size.x / 2 , bound.position.y + bound.size.y / 2};
 }
 
+sf::Vector2f getOriginCenterSprite(sf::Sprite& s)
+{
+    sf::FloatRect bound = s.getGlobalBounds();
+    return {bound.position.x + bound.size.x / 2 , bound.position.y + bound.size.y / 2};
+}
+
+
 
 //kombinerer text-objekt med button-objekt
 void mergeTextButton(screenText& text, Button button)
@@ -117,6 +124,9 @@ sf::Vector2f randomFloats(float n)
 	float y{randomPlusOrMinus(randomPlusOrMinus(n))};
 	return {x,y};
 };
+
+
+
 
 
 
