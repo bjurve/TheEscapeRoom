@@ -7,24 +7,16 @@
 #include <chrono>
 #include <cmath>
 #include <random>
-#include "../include/player.hpp"
-#include "../include/helpFunctions.hpp"
-#include "../include/button.hpp"
-#include "../include/screenText.hpp"
-#include "../include/countDown.hpp"
-#include "../include/character.hpp"
-#include "../include/zombie.hpp"
+
+//inneholder alle klassene og funksjonen som er laget
+#include "../include/header.hpp"
+
 
 
 int main()
 {
-  	
  //========================= CONFIGS =========================================================
-
-
  //-------- General Game Config -------------------------------------------------
-	
- 
 	//Konstruererfor Spillvindu
 	unsigned int width = 1500;
 	unsigned int height = 800;	
@@ -40,15 +32,19 @@ int main()
 	}
  
  	//Game-states og variable for current state
-	enum class gameState{Menu, room1, room2, room3, GameOver, Victory};
-	gameState currentGameState = gameState::room3;
+	enum class gameState{Menu, room1, room2, room3, room4, GameOver, Victory};
+	gameState currentGameState = gameState::room4;
 
 	//initierer og starter klokke
 	countDown countDown(10.0f);
 
 
  //-------- Game Meny Config -----------------------------------------------------
-
+	sf::Texture logoSkin("Assets/PNG/logo.png");
+	sf::Sprite logo(logoSkin);
+	logo.setOrigin(getOriginCenterSprite(logo));
+	logo.setPosition({750.0, 400.0});
+	logo.setScale({0.8,0.8});
 
  //-------- Room 1 Config --------------------------------------------------------
 	//Score count
@@ -64,9 +60,7 @@ int main()
 	sprite.setPosition({800.f,400.f});
 	sprite.setScale({0.06f,0.06f});
 
-
  //-------- Room 2 Config --------------------------------------------------------
-
 	//zombie - room2
 	zombie zombie(bob);
 	zombie.buildZombie();
@@ -85,7 +79,7 @@ int main()
 	answerA.buildButton();
 	sf::Vector2f speedA{5.0, 3.0};
 	//Answer B
-	Button answerB(ButtonSize::small,sf::Color::Red, {750.0, 450.0});
+	Button answerB(ButtonSize::small,sf::Color::Yellow, {750.0, 450.0});
 	answerB.buildButton();
 	sf::Vector2f speedB{5.0, 3.0};
 	//Answer C
@@ -94,6 +88,20 @@ int main()
 	sf::Vector2f speedC{5.0, 3.0};
 
  //-------- Room 4 Config --------------------------------------------------------
+	std::vector<wall> wallCollection;
+
+	wall wall1({750.0, 400.0},{400.0,10.0}, sf::Color::Green);
+	wallCollection.push_back(wall1);
+
+	wall wall2({650.0, 400.0},{10.0,400.0}, sf::Color::Green);
+	wallCollection.push_back(wall2);
+
+	wall wall3({150.0, 400.0},{400.0,10.0}, sf::Color::Green);
+	wallCollection.push_back(wall3);
+
+
+
+
 
  //-------- Game Over Config --------------------------------------------------------
  
@@ -101,7 +109,6 @@ int main()
 
 
  //========================= The Game ===========================================================
-
 	//Game Loop
 	while ( window.isOpen() )
 	{
@@ -129,8 +136,10 @@ int main()
         //Tegning av Game Menu-------------------------------------------------------------------------------------------------
 		if(currentGameState == gameState::Menu)
 		{
+			window.draw(logo);
+
 			//countDown.reset();
-			countDown.restart();
+			countDown.reset();
 
 			//StartGame knapp
 			Button startGame(ButtonSize::medium, sf::Color::White,{750.0f,400.0f});
@@ -142,12 +151,6 @@ int main()
 			mergeTextButton(startGameText, startGame);
 			startGameText.draw(window);
 
-			screenText goodLuck(font, "Can You Beat Every Room??", sf::Color::Magenta, 50);
-			goodLuck.buildText();
-			goodLuck.setPosition({750.0, 600.0});
-			goodLuck.draw(window);
-
-
 			//starter spill hvis startGame er trykket
 			if(buttonClicked(window, startGame)){currentGameState = gameState::room1;}
 			
@@ -157,6 +160,7 @@ int main()
 		else if(currentGameState == gameState::room1)
 		{
 			//Countdown før GameOver
+			countDown.setCountdown(15.0f);
 			countDown.start();
 			std::string timeLeft = countDown.printCountDown();
 
@@ -219,7 +223,7 @@ int main()
 		// //ROOM 2 ---------------------------------------------------------------------------------------------------------------
 		else if(currentGameState == gameState::room2)
 		{
-			countDown.setCountdown(20.0f);
+			countDown.setCountdown(15.0f);
 			countDown.start();
 
 			// sf::Sound zombieSound(buffer);
@@ -227,7 +231,7 @@ int main()
 
 			screenText r2CountDown(font, "You Must Survive For " + countDown.printCountDown() + " seconds!!!", sf::Color::Green, 50);
 			r2CountDown.buildText();
-			r2CountDown.setPosition({400.0, 300.0});
+			r2CountDown.setPosition({400.0, 200.0});
 			r2CountDown.draw(window);
 
 
@@ -235,6 +239,11 @@ int main()
 			room2.buildText();
 			room2.setPosition({750.0f, 50.0f});
 			room2.draw(window);
+
+			screenText infoRoom2(font, "DO NOT get hit by the pac boi!!", sf::Color::Yellow, 80);
+			infoRoom2.buildText();
+			infoRoom2.setPosition({750.0f, 600.0f});
+			infoRoom2.draw(window);
 
 			
 			
@@ -276,8 +285,13 @@ int main()
 			room3.setPosition({750.0f, 50.0f});
 			room3.draw(window);
 
+			screenText infoRoom3(font, "CLICK the corrct answer", sf::Color::Red, 80);
+			infoRoom3.buildText();
+			infoRoom3.setPosition({750.0f, 520.0f});
+			infoRoom3.draw(window);
+
 			//Mattespørsmål som MÅ besvares riktig for å komme videre
-			screenText math(font, "What is 7*7+8+11!!??", sf::Color::Magenta, 70);
+			screenText math(font, "What is 7*7+8+10!!??", sf::Color::Magenta, 70);
 			math.buildText();
 			math.setPosition({750.0,200.0});
 			math.draw(window);
@@ -287,7 +301,7 @@ int main()
 			answerA.getButton().move(speedA);
 			answerA.draw(window);
 
-			screenText answerAText(font, "is it 72?", sf::Color::Black, 40);
+			screenText answerAText(font, "72", sf::Color::White, 30);
 			answerAText.buildText();
 			mergeTextButton(answerAText, answerA);
 			answerAText.draw(window);
@@ -297,7 +311,7 @@ int main()
 			answerB.getButton().move(speedB);
 			answerB.draw(window);
 
-			screenText answerBText(font, "is it 67?", sf::Color::Black, 40);
+			screenText answerBText(font, "67", sf::Color::Black, 70);
 			answerBText.buildText();
 			mergeTextButton(answerBText, answerB);
 			answerBText.draw(window);
@@ -307,7 +321,7 @@ int main()
 			answerC.getButton().move(speedC);
 			answerC.draw(window);
 
-			screenText answerCText(font, "is it 82?", sf::Color::Black, 40);
+			screenText answerCText(font, "82", sf::Color::White, 30);
 			answerCText.buildText();
 			mergeTextButton(answerCText, answerC);
 			answerCText.draw(window);
@@ -332,8 +346,25 @@ int main()
 
 
 		}
+		// Room 4 --------------------------------------------------------------------------------
+		else if(currentGameState == gameState::room4)
+		{
+			for(auto it : wallCollection)
+			{
+				it.buildWall();
+				it.draw(window);
+			}
 
-		//Tegning av Game Over----------------------------------------------------------------------------------------------------
+			bob.playerMovement();
+			bob.draw(window);
+			
+			
+			
+		
+
+		}
+
+		//Game Over----------------------------------------------------------------------------------------------------
 		else if(currentGameState == gameState::GameOver)
 		{
 
