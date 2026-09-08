@@ -62,8 +62,8 @@ int main()
 
  //-------- Room 2 Config --------------------------------------------------------
 	//zombie - room2
-	zombie zombie(bob);
-	zombie.buildZombie();
+	zombie zombieR2(bob);
+	zombieR2.buildZombie();
 
 		// //Zombielyd til rom 2
 	// sf::SoundBuffer buffer;
@@ -99,8 +99,21 @@ int main()
 	wall wall3({150.0, 400.0},{400.0,10.0}, sf::Color::Green);
 	wallCollection.push_back(wall3);
 
+	wall wall4({150.0, 100.0},{400.0,10.0}, sf::Color::Green);
+	wallCollection.push_back(wall4);
 
+	wall wall5({400.0, 100.0},{10.0,200.0}, sf::Color::Green);
+	wallCollection.push_back(wall5);
 
+	wall wall6({550.0, 300.0},{400.0,10.0}, sf::Color::Green);
+	wallCollection.push_back(wall6);
+
+	wall wall7({150.0, 400.0},{400.0,10.0}, sf::Color::Green);
+	wallCollection.push_back(wall7);
+
+	//bygger zombie for rom 4
+	zombie zombieR4(bob);
+	zombieR4.buildZombie();
 
 
  //-------- Game Over Config --------------------------------------------------------
@@ -247,9 +260,9 @@ int main()
 
 			
 			
-			zombie.moveLeft();
-			zombie.borderCheck();
-			zombie.draw(window);
+			zombieR2.moveLeft();
+			zombieR2.borderCheck();
+			zombieR2.draw(window);
 
 			bob.draw(window);
 			bob.playerMovement();
@@ -261,11 +274,11 @@ int main()
 				countDown.reset();
 			}
 
-			if(objectIntersect(zombie.getZombie().getCharacter(), bob.getPlayer()))
+			if(objectIntersect(zombieR2.getZombie().getCharacter(), bob.getPlayer()))
 			{
 				currentGameState = gameState::GameOver;
 				countDown.reset();
-				zombie.getZombie().getSpeedX() = 5.0;
+				zombieR2.getZombie().getSpeedX() = 5.0;
 			}
 
 		}
@@ -335,32 +348,40 @@ int main()
 				countDown.reset();
 			}
 
-			if(buttonClicked(window, answerB) || textClicked(window, answerBText)){currentGameState = gameState::Victory;}
+			if(buttonClicked(window, answerB) || textClicked(window, answerBText)){currentGameState = gameState::room4;}
 
 			if(
 				buttonClicked(window, answerA) || textClicked(window, answerAText) ||
 			 	buttonClicked(window, answerC) || textClicked(window, answerCText)) 
 			{currentGameState = gameState::GameOver;}
 
-
-
-
 		}
 		// Room 4 --------------------------------------------------------------------------------
 		else if(currentGameState == gameState::room4)
 		{
-			for(auto it : wallCollection)
+			
+			//Tegner alle veggene
+			for(wall& it : wallCollection)
 			{
 				it.buildWall();
 				it.draw(window);
 			}
 
+			// Tegner spiller og spiller/vegg-logikk
 			bob.playerMovement();
+			stopWhenTouchingWall(bob, wallCollection);
 			bob.draw(window);
 			
-			
-			
-		
+			// tegner Zombie og logikk
+			zombieR4.followPlayer(bob, 2.0);
+			zombieR4.draw(window);
+
+
+			if(objectIntersect(bob.getPlayer(), zombieR4.getZombie().getCharacter()))
+			{
+				currentGameState = gameState::GameOver;
+			}
+
 
 		}
 

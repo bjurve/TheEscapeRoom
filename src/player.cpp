@@ -5,11 +5,11 @@
 //Bygger spiller med div. egenskaper
 void Player::buildPlayer()
 {
-    this->player.setFillColor(this->playerColor);
+    player.setFillColor(this->playerColor);
 
-    this->player.setOrigin(getOriginCenterPlayer(*this));
-    this->player.setPosition({400.0f, 400.0f});
-    this->player.setRadius(50.0f);
+    player.setOrigin(getOriginCenterObject(player));
+    player.setPosition({1300.0f,600.0f});
+    player.setRadius(30.0f);
 
 }
 
@@ -17,10 +17,7 @@ void Player::buildPlayer()
 //PlayerMovement by arrows 
 void Player::playerMovement()
 {
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {player.move({-5.0f,0.0f});}
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)){player.move({5.0f,0.0f});}
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))   {player.move({0.0f,-5.0f});}
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {player.move({0.0f,5.0f});}
+    arrowMovementControl(player);
 
     //stopper bevegelse hvis karakter bryter vindugrenser
 	sf::FloatRect bounds = player.getGlobalBounds();		
@@ -30,14 +27,28 @@ void Player::playerMovement()
 	if(bounds.position.y + bounds.size.y > 800.0f){player.move({0.0f,-5.0f});}
 }
 
-
-void Player::draw(sf::RenderWindow& window)
+void Player::wallBlock(wall w)
 {
-    window.draw(this->player);
+    if(objectIntersect(player, w.getWall()))
+    {
+        player.move({0.0,0.0});
+    }
+
+}
+
+void Player::resize(float f)
+{
+    player.setRadius(f);
 }
 
 
-sf::CircleShape Player::getPlayer()const
+void Player::draw(sf::RenderWindow& window)
 {
-    return this->player;
+    window.draw(player);
+}
+
+
+sf::CircleShape& Player::getPlayer()
+{
+    return player;
 }

@@ -15,7 +15,7 @@ room================
 mechanic============ plukke opp objekt som permannet øker stats 
 mechanic============ Highscoreliste
 mechanic============ Mulighet for å ha liv
-mechanic============
+mechanic============ Gjøre om alle rommene til egne klasser
 mechanic============
 mechanic============
 mechanic============

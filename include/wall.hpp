@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "helpFunctions.hpp"
+
 
 
 
@@ -12,6 +12,8 @@ class wall
 
     void buildWall();
     void draw(sf::RenderWindow& w);
+
+    sf::RectangleShape& getWall();
 
 
     private:

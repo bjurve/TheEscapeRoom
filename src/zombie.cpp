@@ -24,4 +24,27 @@ void zombie::borderCheck()
     }
 }
 
+void zombie::followPlayer(Player& p, float speed)
+{
+    // Få posisjonene
+    sf::Vector2f zombiePos = zombieBoi.getCharacter().getPosition();
+    sf::Vector2f playerPos = p.getPlayer().getPosition();
+    
+    // Beregn retningsvektor
+    sf::Vector2f direction = playerPos - zombiePos;
+    
+    // Beregn lengden (distansen)
+    float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+    
+
+    if (distance > 0.1f)
+    {
+        // Normaliser vektoren 
+        direction /= distance;
+        
+        // Beveg zombien mot spilleren
+        zombieBoi.getCharacter().move(direction * speed);
+    }
+}
+
 character& zombie::getZombie(){return zombieBoi;}

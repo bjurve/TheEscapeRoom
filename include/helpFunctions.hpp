@@ -6,18 +6,16 @@
 #include "screenText.hpp"
 #include <cmath>
 #include <random>
+#include <iostream>
+#include "zombie.hpp"
+
 
 
 sf::Vector2f randomCoordinates(float maxX, float maxY);
 
 float randomCoordinateX(float maxX);
 float randomCoordinateY(float maxY);
-
 float randomNumber(float n);
-
-
-
-
 
 //Produserer sentrumspunktetkoordinater til diverse objekter
 sf::Vector2f getOriginCenterPlayer(const Player& p);
@@ -29,10 +27,16 @@ sf::Vector2f getOriginCenterSprite(sf::Sprite& s);
 //kombinerer text-objekt med button-objekt
 void mergeTextButton(screenText& text, Button button);
 
+void arrowMovementControl(sf::CircleShape& p);
+void stopWhenTouchingWall(Player& p, const std::vector<wall>& c);
+
+
 //returnerer true hvis knapp er trykket
 bool buttonClicked(sf::Window& window, Button button);
 bool textClicked(sf::Window& window, screenText text);
 
+
+//returnerer float Input som pluss eller minus
 float randomPlusOrMinus(float n);
 
 sf::Vector2f randomFloats(float n);
@@ -50,8 +54,7 @@ bool objectIntersect(T a,U b)
 	}
 
 	return false;
-};
-
+}
 //returnerer True hvis objekt krysser spillvindu
 template<typename T>
 bool objectTouchWindowBorder(T& t)
@@ -65,9 +68,9 @@ bool objectTouchWindowBorder(T& t)
 }
 
 template<typename T>
-sf::Vector2f getOriginCenterObject(T& o)
+sf::Vector2f getOriginCenterObject(T& s)
 {
-    sf::FloatRect bound = o.getGlobalBounds();
+    sf::FloatRect bound = s.getGlobalBounds();
     return {bound.position.x + bound.size.x / 2 , bound.position.y + bound.size.y / 2};
 }
 

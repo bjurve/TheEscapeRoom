@@ -43,14 +43,14 @@ float randomNumber(float n)
 	std::uniform_real_distribution<float> distX(0.0f,n);
 
     return distX(engine);
-};
+}
 
 
 
 
 
 //Produserer sentrumspunktkoordinater til objekt
-sf::Vector2f getOriginCenterPlayer(const Player& p)
+sf::Vector2f getOriginCenterPlayer(Player& p)
 {
     sf::FloatRect bound = p.getPlayer().getGlobalBounds();
     return {bound.position.x + bound.size.x / 2 , bound.position.y + bound.size.y / 2};
@@ -81,6 +81,34 @@ void mergeTextButton(screenText& text, Button button)
 {
     text.getText().setPosition(button.getButton().getPosition());
 }
+
+
+void arrowMovementControl(sf::CircleShape& p)
+{
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {p.move({-5.0f,0.0f});}
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)){p.move({5.0f,0.0f});}
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))   {p.move({0.0f,-5.0f});}
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {p.move({0.0f,5.0f});}
+}
+
+
+
+void stopWhenTouchingWall(Player& p, const std::vector<wall>& c)
+{
+    for( wall it : c)
+    {
+        if(objectIntersect(p.getPlayer(),it.getWall()))
+        {
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {p.getPlayer().move({5.0f, 0.0f});}
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)){p.getPlayer().move({-5.0f, 0.0f});}
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))   {p.getPlayer().move({0.0f,5.0f});}
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {p.getPlayer().move({0.0f,-5.0f});}
+            return;
+        }
+    }
+
+}
+
 
 //Returnerer True hvis knapp trykkes
 bool buttonClicked(sf::Window& window, Button button)
@@ -116,14 +144,14 @@ float randomPlusOrMinus(float n)
     if(randomNumber(10) < 5){return n;}
 
     return 0 - n;
-};
+}
 
 sf::Vector2f randomFloats(float n)
 {
 	float x{randomPlusOrMinus(randomNumber(n))};
 	float y{randomPlusOrMinus(randomPlusOrMinus(n))};
 	return {x,y};
-};
+}
 
 
 

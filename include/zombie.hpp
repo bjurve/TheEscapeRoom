@@ -21,6 +21,8 @@ class zombie{
     void borderCheck();
     void changeDirWhenTouchWindow();
 
+    void followPlayer(Player& p, float speed);
+
     character& getZombie();
 
     private:

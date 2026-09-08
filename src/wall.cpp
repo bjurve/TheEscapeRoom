@@ -15,3 +15,5 @@ void wall::draw(sf::RenderWindow& w)
 {
     w.draw(wallBoi);
 };
+
+sf::RectangleShape& wall::getWall(){return wallBoi;}
