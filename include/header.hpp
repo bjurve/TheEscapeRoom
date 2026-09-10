@@ -8,3 +8,4 @@
 #include "character.hpp"
 #include "zombie.hpp"
 #include "wall.hpp"
+#include "background.hpp"

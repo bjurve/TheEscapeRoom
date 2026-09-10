@@ -46,6 +46,8 @@ int main()
 	logo.setPosition({750.0, 400.0});
 	logo.setScale({0.8,0.8});
 
+	background menyBAckground("Assets/PNG/pikselBackground.png", width, height);
+
  //-------- Room 1 Config --------------------------------------------------------
 	//Score count
 	int count = 0;
@@ -149,6 +151,7 @@ int main()
         //Tegning av Game Menu-------------------------------------------------------------------------------------------------
 		if(currentGameState == gameState::Menu)
 		{
+			menyBAckground.draw(window);
 			window.draw(logo);
 
 			//countDown.reset();
