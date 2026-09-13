@@ -5,13 +5,27 @@
 void character::buildCharacter()
 {
     sprite.setTexture(skin);
-    sprite.setPosition({750.0f, 400.0f});
-    sprite.setScale({0.06f,0.06f});
+    sprite.setPosition(pos);
+    sprite.setScale(scale);
 }
 
 void character::draw(sf::RenderWindow& window){ window.draw(sprite);}
 
-void character::moveLeft(){sprite.move({speedX,0.0f});};
+void character::moveLeft(){sprite.move({-speedX,0.0f});};
+void character::moveRight(){sprite.move({speedX,0.0f});};
+
+// void character::loopLeft(sf::Vector2f coord)
+// {
+//     sprite.move({-speedX,0.0f});
+//     if(objectTouchWindowBorder(sprite))
+//     {
+//         sprite.setPosition{coord};
+//     }
+
+
+// }
+
+
 
 void character::speedUp(){speedX++;};
 

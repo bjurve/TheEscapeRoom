@@ -6,6 +6,6 @@
 #include "screenText.hpp"
 #include "countDown.hpp"
 #include "character.hpp"
-#include "zombie.hpp"
+#include "enemy.hpp"
 #include "wall.hpp"
 #include "background.hpp"

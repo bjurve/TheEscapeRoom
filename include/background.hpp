@@ -10,6 +10,7 @@ class background
 {
     public:
     background(std::string path, float width, float height);
+    ~background();
 
     void draw(sf::RenderWindow& window);
 

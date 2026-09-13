@@ -8,7 +8,7 @@ void Player::buildPlayer()
     player.setFillColor(this->playerColor);
 
     player.setOrigin(getOriginCenterObject(player));
-    player.setPosition({1300.0f,600.0f});
+    player.setPosition({1400.0f,600.0f});
     player.setRadius(30.0f);
 
 }

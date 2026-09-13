@@ -12,9 +12,15 @@ background::background(std::string path, float width, float height)
         throw std::runtime_error("error loading file: " + path + "\n");
     }
 
-    sprite->setTexture(texture);
+    sprite = new sf::Sprite(texture);
+    //sprite->setTexture(texture);
     sprite->setScale(sf::Vector2f{width / texture.getSize().x, height / texture.getSize().y});
 
+}
+
+background::~background()
+{
+    delete sprite;
 }
 
 
