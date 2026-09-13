@@ -4,29 +4,32 @@
 
 void enemy::buildEnemy()
 {
-    enemyBoi.getCharacter().setScale({0.10f, 0.10f});
-    enemyBoi.getCharacter().setPosition({0.0, 400.0});
+    enemyBoi.setScale({scale});
+    enemyBoi.setPosition({pos});
 }
 
-void enemy::draw(sf::RenderWindow& window){ window.draw(enemyBoi.getCharacter());}
+void enemy::incSpeed(){speed++;}
+void enemy::decSpeed(){speed--;}
+
+void enemy::draw(sf::RenderWindow& window){ window.draw(enemyBoi);}
 
 
 
-void enemy::moveLeft(){enemyBoi.moveLeft();}
+void enemy::moveRight(){enemyBoi.move({speed,0.0});}
 
 void enemy::borderCheck()
 {
-    if(objectTouchWindowBorder(enemyBoi.getCharacter()))
+    if(objectTouchWindowBorder(enemyBoi))
     {
-        enemyBoi.getCharacter().setPosition({0.0,randomCoordinateY(800.0)});
-        enemyBoi.speedUp();
+        enemyBoi.setPosition({0.0,randomCoordinateY(800.0)});
+        speed++;
     }
 }
 
-void enemy::followPlayer(Player& p, float speed)
+void enemy::followPlayer(Player& p, float speedf)
 {
     // Få posisjonene
-    sf::Vector2f enemyPos = enemyBoi.getCharacter().getPosition();
+    sf::Vector2f enemyPos = enemyBoi.getPosition();
     sf::Vector2f playerPos = p.getPlayer().getPosition();
     
     // Beregn retningsvektor
@@ -42,8 +45,10 @@ void enemy::followPlayer(Player& p, float speed)
         direction /= distance;
         
         // Beveg zombien mot spilleren
-        enemyBoi.getCharacter().move(direction * speed);
+        enemyBoi.move(direction * speedf);
     }
 }
 
-character& enemy::getEnemy(){return enemyBoi;}
+sf::Sprite& enemy::getEnemy(){return enemyBoi;}
+
+float& enemy::getSpeed(){return speed;}

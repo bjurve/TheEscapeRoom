@@ -37,7 +37,7 @@ int main()
 	
 		//Game-states og variable for current state
 		enum class gameState{Menu, room1, room2, room3, room4, GameOver, Victory};
-		gameState currentGameState = gameState::Menu;
+		gameState currentGameState = gameState::room2;
 
 		//initierer og starter klokke
 		countDown countDown(10.0f);
@@ -71,16 +71,10 @@ int main()
 
 	//-------- Room 2 Config --------------------------------------------------------
 		//zombie - room2
-		enemy zombieR2(bob);
+		enemy zombieR2("Assets/PNG/skully.png",bob,{0.0,400.0});
 		zombieR2.buildEnemy();
 
-			// //Zombielyd til rom 2
-		// sf::SoundBuffer buffer;
-		// if(!font.openFromFile("Assets/SOUND/zombieSound.wav"))
-		// {
-		// 	std::cerr << "Failed to load Sound!!!" << std::endl;
-		// 	return -1;
-		// }
+		background R2Background("Assets/PNG/lava.png", width, height);
 
 	//-------- Room 3 Config --------------------------------------------------------
 		//Answer A
@@ -121,11 +115,13 @@ int main()
 		wallCollection.push_back(wall7);
 
 		//bygger zombie for rom 4
-		enemy zombieR4(bob);
+		enemy zombieR4("Assets/PNG/skully.png",bob,{0.0,400.0});
 		zombieR4.buildEnemy();
 
 
 	//-------- Game Over Config --------------------------------------------------------
+
+		background GMBackground("Assets/PNG/gameoverBackground.png", width, height);
 	
 	//================================================================================================
 
@@ -253,31 +249,32 @@ int main()
 			// //ROOM 2 ---------------------------------------------------------------------------------------------------------------
 			else if(currentGameState == gameState::room2)
 			{
+				R2Background.draw(window);
 				countDown.setCountdown(15.0f);
 				countDown.start();
 
 				// sf::Sound zombieSound(buffer);
 				// zombieSound.play();
 
-				screenText r2CountDown(font, "You Must Survive For " + countDown.printCountDown() + " seconds!!!", sf::Color::Green, 50);
+				screenText r2CountDown(font, "You Must Survive For " + countDown.printCountDown() + " seconds!!!", sf::Color::Green, 20);
 				r2CountDown.buildText();
 				r2CountDown.setPosition({400.0, 200.0});
 				r2CountDown.draw(window);
 
 
-				screenText room2(font, "ROOM 2", sf::Color::Green, 80);
+				screenText room2(font, "ROOM 2", sf::Color::Green, 30);
 				room2.buildText();
 				room2.setPosition({750.0f, 50.0f});
 				room2.draw(window);
 
-				screenText infoRoom2(font, "DO NOT get hit by the pac boi!!", sf::Color::Yellow, 80);
+				screenText infoRoom2(font, "OOHH NOO, watch out for Skully (you're swore enemy)!!", sf::Color::Yellow, 30);
 				infoRoom2.buildText();
 				infoRoom2.setPosition({750.0f, 600.0f});
 				infoRoom2.draw(window);
 
 				
 				
-				zombieR2.moveLeft();
+				zombieR2.moveRight();
 				zombieR2.borderCheck();
 				zombieR2.draw(window);
 
@@ -291,11 +288,11 @@ int main()
 					countDown.reset();
 				}
 
-				if(objectIntersect(zombieR2.getEnemy().getCharacter(), bob.getPlayer()))
+				if(objectIntersect(zombieR2.getEnemy(), bob.getPlayer()))
 				{
 					currentGameState = gameState::GameOver;
 					countDown.reset();
-					zombieR2.getEnemy().getSpeedX() = 5.0;
+					zombieR2.getSpeed() = 2.0;
 				}
 
 			}
@@ -394,7 +391,7 @@ int main()
 				zombieR4.draw(window);
 
 
-				if(objectIntersect(bob.getPlayer(), zombieR4.getEnemy().getCharacter()))
+				if(objectIntersect(bob.getPlayer(), zombieR4.getEnemy()))
 				{
 					currentGameState = gameState::GameOver;
 				}
@@ -405,19 +402,8 @@ int main()
 			//Game Over----------------------------------------------------------------------------------------------------
 			else if(currentGameState == gameState::GameOver)
 			{
-
-				//GameOver Tekst
-				screenText gameOverText(font, "GAME OVER!!!!", sf::Color::White, 100);
-				gameOverText.buildText();
-				gameOverText.setPosition({750.0f, 200.0f});
-				gameOverText.draw(window);
-
-				//Finale Score Tekst
-				screenText finaleScore(font, "Youre Score: " + std::to_string(count), sf::Color::White, 70);
-				finaleScore.buildText();
-				finaleScore.setPosition({750.0f, 400.0f});
-				finaleScore.draw(window);
-
+				GMBackground.draw(window);
+			
 				//Restart game Knapp,Tekst og logikk
 				Button tryAgainButton(ButtonSize::medium, sf::Color::White, {750.0f, 600.0f});
 				tryAgainButton.buildButton();
