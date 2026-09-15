@@ -33,11 +33,10 @@ int main()
 			return -1;
 		}
 
-		std::cout << "TeksFont lastet" << std::endl;
 	
 		//Game-states og variable for current state
-		enum class gameState{Menu, room1, room2, room3, room4, GameOver, Victory};
-		gameState currentGameState = gameState::room2;
+		//enum class gameState{Menu, room1, room2, room3, room4, GameOver, Victory};
+		gameState currentGameState = gameState::room4;
 
 		//initierer og starter klokke
 		countDown countDown(10.0f);
@@ -45,9 +44,9 @@ int main()
 
 	//-------- Game Meny Config -----------------------------------------------------
 		
-		std::cout << "Neste steg er å generere bakgrunn" << std::endl;
+
 		background menyBAckground("Assets/PNG/pikselBackground.png", width, height);
-		std::cout << "Meny Bakgrunn generert men ikke Lastet opp" << std::endl;
+		
 
 		character cloud1("Assets/PNG/cloud.png", {100.0,200.0}, {0.2,0.2});
 		cloud1.buildCharacter();
@@ -57,7 +56,7 @@ int main()
 		int count = 0;
 
 		//Sirkel Objekt
-		Player bob("bob",sf::Color::Red);
+		Player bob("Assets/PNG/bob.png");
 		bob.buildPlayer();
 
 		//Sol - room1

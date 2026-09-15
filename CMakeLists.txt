@@ -13,8 +13,9 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(main src/main.cpp src/player.cpp src/button.cpp src/helpFunctions.cpp
-src/screenText.cpp src/countDown.cpp src/character.cpp src/enemy.cpp src/wall.cpp src/background.cpp)
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+
+add_executable(main ${SOURCES})
 target_include_directories(main PRIVATE include)
 
 set_target_properties(main PROPERTIES

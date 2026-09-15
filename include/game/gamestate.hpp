@@ -1,0 +1,4 @@
+#pragma once
+
+
+enum class gameState{Menu, room1, room2, room3, room4, GameOver, Victory};
