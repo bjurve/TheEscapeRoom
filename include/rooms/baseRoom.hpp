@@ -9,7 +9,7 @@
 class baseRoom
 {
     public:
-        baseRoom(sf::RenderWindow* w, gameState gs)
+        baseRoom(sf::RenderWindow* w, gameState* gs)
         :window{w},currentState{gs}
         {
             if(!font.openFromFile("Assets/FONT/escape_game_font.ttf"))
@@ -20,13 +20,11 @@ class baseRoom
         }; 
 
 
-
-
     protected:
 
 
         sf::RenderWindow* window;
-        gameState currentState;
+        gameState* currentState;
 
         sf::Font font;
 

@@ -33,10 +33,8 @@ int main()
 			return -1;
 		}
 
-	
-		//Game-states og variable for current state
-		//enum class gameState{Menu, room1, room2, room3, room4, GameOver, Victory};
-		gameState currentGameState = gameState::Menu;
+
+		gameState currentGameState = gameState::room1;
 
 		//initierer og starter klokke
 		countDown countDown(10.0f);
@@ -44,34 +42,18 @@ int main()
 
 	//-------- Game Meny Config -----------------------------------------------------
 		
-
-		// background menyBAckground("Assets/PNG/pikselBackground.png", width, height);
-		
-
-		// character cloud1("Assets/PNG/cloud.png", {100.0,200.0}, {0.2,0.2});
-		// cloud1.buildCharacter();
+		gameMeny meny(&window, &currentGameState);
 
 	//-------- Room 1 Config  (SunCollect) --------------------------------------------------------
-		//Score count
-		int count = 0;
-
-		//Sirkel Objekt
-		Player bob("Assets/PNG/bob.png");
-		bob.buildPlayer();
-
-		//Sol - room1bjurve
-		sf::Texture texture("Assets/PNG/sun.png");
-		sf::Sprite sprite(texture);
-		sprite.setPosition({800.f,400.f});
-		sprite.setScale({0.06f,0.06f});
-
-		background R1Background("Assets/PNG/blueSky.png", width, height);
+		
+		room1 room1(&window, &currentGameState);
+		room1.config();
 
 
 	//-------- Room 2 Config --------------------------------------------------------
 		//zombie - room2
-		enemy zombieR2("Assets/PNG/skully.png",bob,{0.0,400.0});
-		zombieR2.buildEnemy();
+		// enemy zombieR2("Assets/PNG/skully.png",bob,{0.0,400.0});
+		// zombieR2.buildEnemy();
 
 		background R2Background("Assets/PNG/lava.png", width, height);
 
@@ -90,32 +72,32 @@ int main()
 		sf::Vector2f speedC{5.0, 3.0};
 
 	//-------- Room 4 Config --------------------------------------------------------
-		std::vector<wall> wallCollection;
+		// std::vector<wall> wallCollection;
 
-		wall wall1({750.0, 400.0},{400.0,10.0}, sf::Color::Green);
-		wallCollection.push_back(wall1);
+		// wall wall1({750.0, 400.0},{400.0,10.0}, sf::Color::Green);
+		// wallCollection.push_back(wall1);
 
-		wall wall2({650.0, 400.0},{10.0,400.0}, sf::Color::Green);
-		wallCollection.push_back(wall2);
+		// wall wall2({650.0, 400.0},{10.0,400.0}, sf::Color::Green);
+		// wallCollection.push_back(wall2);
 
-		wall wall3({150.0, 400.0},{400.0,10.0}, sf::Color::Green);
-		wallCollection.push_back(wall3);
+		// wall wall3({150.0, 400.0},{400.0,10.0}, sf::Color::Green);
+		// wallCollection.push_back(wall3);
 
-		wall wall4({150.0, 100.0},{400.0,10.0}, sf::Color::Green);
-		wallCollection.push_back(wall4);
+		// wall wall4({150.0, 100.0},{400.0,10.0}, sf::Color::Green);
+		// wallCollection.push_back(wall4);
 
-		wall wall5({400.0, 100.0},{10.0,200.0}, sf::Color::Green);
-		wallCollection.push_back(wall5);
+		// wall wall5({400.0, 100.0},{10.0,200.0}, sf::Color::Green);
+		// wallCollection.push_back(wall5);
 
-		wall wall6({550.0, 300.0},{400.0,10.0}, sf::Color::Green);
-		wallCollection.push_back(wall6);
+		// wall wall6({550.0, 300.0},{400.0,10.0}, sf::Color::Green);
+		// wallCollection.push_back(wall6);
 
-		wall wall7({150.0, 400.0},{400.0,10.0}, sf::Color::Green);
-		wallCollection.push_back(wall7);
+		// wall wall7({150.0, 400.0},{400.0,10.0}, sf::Color::Green);
+		// wallCollection.push_back(wall7);
 
-		//bygger zombie for rom 4
-		enemy zombieR4("Assets/PNG/skully.png",bob,{0.0,400.0});
-		zombieR4.buildEnemy();
+		// //bygger zombie for rom 4
+		// enemy zombieR4("Assets/PNG/skully.png",bob,{0.0,400.0});
+		// zombieR4.buildEnemy();
 
 
 	//-------- Game Over Config --------------------------------------------------------
@@ -153,150 +135,114 @@ int main()
 			//Tegning av Game Menu-------------------------------------------------------------------------------------------------
 			if(currentGameState == gameState::Menu)
 			{
-
-
-	
-				gameMeny meny(&window, currentGameState);
-				meny.run();
-
-
-
-				// menyBAckground.draw(window);
-				// std::cout << "Meny Bakgrunn lastet" << std::endl;
-
-
-
-				// //countDown.reset();
-				// countDown.reset();
-
-				// //StartGame knapp
-				// Button startGame(ButtonSize::medium, sf::Color::White,{750.0f,400.0f});
-				// startGame.buildButton();
-				// startGame.draw(window);
-
-				// screenText startGameText(font, "START GAME", sf::Color::Red, 50);
-				// startGameText.buildText();
-				// mergeTextButton(startGameText, startGame);
-				// startGameText.draw(window);
-
-				// //starter spill hvis startGame er trykket
-				// if(buttonClicked(window, startGame)){currentGameState = gameState::room1;}
-				
-		
+				meny.run();	
 			}
 			//ROOM 1--------------------------------------------------------------------------------------------
 			else if(currentGameState == gameState::room1)
 			{
-				R1Background.draw(window);
-				//Countdown før GameOver
-				countDown.setCountdown(15.0f);
-				countDown.start();
-				std::string timeLeft = countDown.printCountDown();
+			
+
+				room1.run();
+
+				// countDown.setCountdown(15.0f);
+				// countDown.start();
+				// std::string timeLeft = countDown.printCountDown();
 
 
-				screenText countDownText(font, timeLeft, sf::Color::Cyan, 120);
-				countDownText.buildText();
-				countDownText.setPosition({1200.0f,400.0f});
-				countDownText.draw(window);
-				countDownText.updateText(timeLeft);
-
-				screenText room1(font, "ROOM 1", sf::Color::Yellow, 60);
-				room1.buildText();
-				room1.setPosition({750.0f, 50.0f});
-				room1.draw(window);
-
-				screenText infoRoom1(font, "Collect 5 Suns before time runs out!!!!! \n HURRY!", sf::Color::Yellow, 30);
-				infoRoom1.buildText();
-				infoRoom1.setPosition({560.0, 300.0});
-				infoRoom1.draw(window);
+				// screenText countDownText(font, timeLeft, sf::Color::Cyan, 120);
+				// countDownText.buildText();
+				// countDownText.setPosition({1200.0f,400.0f});
+				// countDownText.draw(window);
+				// countDownText.updateText(timeLeft);
 
 
-				if(countDown.isTimerOver())
-				{
-					currentGameState = gameState::GameOver;
-					countDown.reset();
-				}
 
-				if(count >= 5)
-				{
-					currentGameState = gameState::room2;
-					countDown.reset();
-				}
+				// if(countDown.isTimerOver())
+				// {
+				// 	currentGameState = gameState::GameOver;
+				// 	countDown.reset();
+				// }
+
+				// if(count >= 5)
+				// {
+				// 	currentGameState = gameState::room2;
+				// 	countDown.reset();
+				// }
 
 
 
 				//SunBurnCount Tekst 
-				sf::Text SunBurnCount(font);
-				SunBurnCount.setString("Count: " + std::to_string(count));
+				// sf::Text SunBurnCount(font);
+				// SunBurnCount.setString("Count: " + std::to_string(count));
 
 			
-				bob.playerMovement();
 		
-				//KarakterBorder + SpriteBorder-logikk
-				if(sprite.getGlobalBounds().findIntersection(bob.getPlayer().getGlobalBounds()))
-				{	
-					count = count + 1;
-					bob.getPlayer().setPosition({width / 4.0f, height / 2.0f});
-					sprite.setPosition(randomCoordinates(1500.0f, 800.0f));
-				}			
+		
+				// //KarakterBorder + SpriteBorder-logikk
+				// if(sprite.getGlobalBounds().findIntersection(bob.getPlayer().getGlobalBounds()))
+				// {	
+				// 	count = count + 1;
+				// 	bob.getPlayer().setPosition({width / 4.0f, height / 2.0f});
+				// 	sprite.setPosition(randomCoordinates(1500.0f, 800.0f));
+				// }			
 
 
-
+				
 
 				//tegner
-				window.draw(sprite);
-				bob.draw(window);
-				window.draw(SunBurnCount);
+				//window.draw(sprite);
+				
+				//window.draw(SunBurnCount);
 			}
 		
 			// //ROOM 2 ---------------------------------------------------------------------------------------------------------------
 			else if(currentGameState == gameState::room2)
 			{
-				R2Background.draw(window);
-				countDown.setCountdown(15.0f);
-				countDown.start();
+				// R2Background.draw(window);
+				// countDown.setCountdown(15.0f);
+				// countDown.start();
 
-				// sf::Sound zombieSound(buffer);
-				// zombieSound.play();
+				// // sf::Sound zombieSound(buffer);
+				// // zombieSound.play();
 
-				screenText r2CountDown(font, "You Must Survive For " + countDown.printCountDown() + " seconds!!!", sf::Color::Green, 20);
-				r2CountDown.buildText();
-				r2CountDown.setPosition({400.0, 200.0});
-				r2CountDown.draw(window);
+				// screenText r2CountDown(font, "You Must Survive For " + countDown.printCountDown() + " seconds!!!", sf::Color::Green, 20);
+				// r2CountDown.buildText();
+				// r2CountDown.setPosition({400.0, 200.0});
+				// r2CountDown.draw(window);
 
 
-				screenText room2(font, "ROOM 2", sf::Color::Green, 30);
-				room2.buildText();
-				room2.setPosition({750.0f, 50.0f});
-				room2.draw(window);
+				// screenText room2(font, "ROOM 2", sf::Color::Green, 30);
+				// room2.buildText();
+				// room2.setPosition({750.0f, 50.0f});
+				// room2.draw(window);
 
-				screenText infoRoom2(font, "OOHH NOO, watch out for Skully (you're swore enemy)!!", sf::Color::Yellow, 30);
-				infoRoom2.buildText();
-				infoRoom2.setPosition({750.0f, 600.0f});
-				infoRoom2.draw(window);
+				// screenText infoRoom2(font, "OOHH NOO, watch out for Skully (you're swore enemy)!!", sf::Color::Yellow, 30);
+				// infoRoom2.buildText();
+				// infoRoom2.setPosition({750.0f, 600.0f});
+				// infoRoom2.draw(window);
 
 				
 				
-				zombieR2.moveRight();
-				zombieR2.borderCheck();
-				zombieR2.draw(window);
+				// zombieR2.moveRight();
+				// zombieR2.borderCheck();
+				// zombieR2.draw(window);
 
-				bob.draw(window);
-				bob.playerMovement();
+				// bob.draw(window);
+				// bob.playerMovement();
 
 
-				if(countDown.isTimerOver())
-				{
-					currentGameState = gameState::room3;
-					countDown.reset();
-				}
+				// if(countDown.isTimerOver())
+				// {
+				// 	currentGameState = gameState::room3;
+				// 	countDown.reset();
+				// }
 
-				if(objectIntersect(zombieR2.getEnemy(), bob.getPlayer()))
-				{
-					currentGameState = gameState::GameOver;
-					countDown.reset();
-					zombieR2.getSpeed() = 2.0;
-				}
+				// if(objectIntersect(zombieR2.getEnemy(), bob.getPlayer()))
+				// {
+				// 	currentGameState = gameState::GameOver;
+				// 	countDown.reset();
+				// 	zombieR2.getSpeed() = 2.0;
+				// }
 
 			}
 			//ROOM 3 ---------------------------------------------------------------------------------
@@ -377,27 +323,27 @@ int main()
 			else if(currentGameState == gameState::room4)
 			{
 				
-				//Tegner alle veggene
-				for(wall& it : wallCollection)
-				{
-					it.buildWall();
-					it.draw(window);
-				}
+				// //Tegner alle veggene
+				// for(wall& it : wallCollection)
+				// {
+				// 	it.buildWall();
+				// 	it.draw(window);
+				// }
 
-				// Tegner spiller og spiller/vegg-logikk
-				bob.playerMovement();
-				stopWhenTouchingWall(bob, wallCollection);
-				bob.draw(window);
+				// // Tegner spiller og spiller/vegg-logikk
+				// bob.playerMovement();
+				// stopWhenTouchingWall(bob, wallCollection);
+				// bob.draw(window);
 				
-				// tegner Zombie og logikk
-				zombieR4.followPlayer(bob, 2.0);
-				zombieR4.draw(window);
+				// // tegner Zombie og logikk
+				// zombieR4.followPlayer(bob, 2.0);
+				// zombieR4.draw(window);
 
 
-				if(objectIntersect(bob.getPlayer(), zombieR4.getEnemy()))
-				{
-					currentGameState = gameState::GameOver;
-				}
+				// if(objectIntersect(bob.getPlayer(), zombieR4.getEnemy()))
+				// {
+				// 	currentGameState = gameState::GameOver;
+				// }
 
 
 			}
@@ -405,24 +351,24 @@ int main()
 			//Game Over----------------------------------------------------------------------------------------------------
 			else if(currentGameState == gameState::GameOver)
 			{
-				GMBackground.draw(window);
+				// GMBackground.draw(window);
 			
-				//Restart game Knapp,Tekst og logikk
-				Button tryAgainButton(ButtonSize::medium, sf::Color::White, {750.0f, 600.0f});
-				tryAgainButton.buildButton();
-				tryAgainButton.draw(window);
+				// //Restart game Knapp,Tekst og logikk
+				// Button tryAgainButton(ButtonSize::medium, sf::Color::White, {750.0f, 600.0f});
+				// tryAgainButton.buildButton();
+				// tryAgainButton.draw(window);
 
-				screenText tryAgainText(font, "Try Again", sf::Color::Red, 30);
-				tryAgainText.buildText();
-				mergeTextButton(tryAgainText,tryAgainButton);
-				tryAgainText.draw(window);
+				// screenText tryAgainText(font, "Try Again", sf::Color::Red, 30);
+				// tryAgainText.buildText();
+				// mergeTextButton(tryAgainText,tryAgainButton);
+				// tryAgainText.draw(window);
 
-				if(buttonClicked(window, tryAgainButton))
-				{
-					currentGameState = gameState::room1;
-					//countDown.reset();
-					count = 0;
-				}
+				// if(buttonClicked(window, tryAgainButton))
+				// {
+				// 	currentGameState = gameState::room1;
+				// 	//countDown.reset();
+				// 	count = 0;
+				// }
 
 			}
 			//Victory -------------------------------------------------------------------------	

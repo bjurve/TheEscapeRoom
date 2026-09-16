@@ -37,27 +37,16 @@ void gameMeny::drawButtons()
 
 };
 
-bool gameMeny::isRoomFinished()
-{
-    return roomFinished;
-
-};
-
 
 void gameMeny::run()
 {
+    drawBackground();
+    drawClouds();
+    drawButtons();
 
-    while(1)
+    if(roomFinished)
     {
-        drawBackground();
-        drawClouds();
-        drawButtons();
-
-        if(isRoomFinished())
-        {
-            break;
-        }
-
+        *currentState = gameState::room1;
     }
 
 };

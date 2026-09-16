@@ -18,3 +18,4 @@
 
 #include "rooms/baseRoom.hpp"
 #include "rooms/gameMeny.hpp"
+#include "rooms/room1.hpp"
