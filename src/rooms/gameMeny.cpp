@@ -14,4 +14,50 @@ void gameMeny::drawClouds()
 	cloud1.buildCharacter();
     cloud1.draw(*window);
 
+
 }
+
+void gameMeny::drawButtons()
+{
+    Button startGame(ButtonSize::medium, sf::Color::White,{750.0f,400.0f});
+	startGame.buildButton();
+	startGame.draw(*window);
+		
+    screenText startGameText(font, "START GAME", sf::Color::Red, 50);
+	startGameText.buildText();
+	mergeTextButton(startGameText, startGame);
+	startGameText.draw(*window);
+
+
+    if(buttonClicked(*window, startGame))
+    {
+        roomFinished = true;
+
+    }
+
+};
+
+bool gameMeny::isRoomFinished()
+{
+    return roomFinished;
+
+};
+
+
+void gameMeny::run()
+{
+
+    while(1)
+    {
+        drawBackground();
+        drawClouds();
+        drawButtons();
+
+        if(isRoomFinished())
+        {
+            break;
+        }
+
+    }
+
+};

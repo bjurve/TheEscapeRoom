@@ -2,14 +2,23 @@
 
 #include <SFML/Graphics.hpp>
 #include "game/gamestate.hpp"
+#include <iostream>
 
 
 
 class baseRoom
 {
     public:
-        baseRoom(sf::RenderWindow* w, gameState* gs)
-        :window{w},gameState{gs}{}; 
+        baseRoom(sf::RenderWindow* w, gameState gs)
+        :window{w},currentState{gs}
+        {
+            if(!font.openFromFile("Assets/FONT/escape_game_font.ttf"))
+		    {
+			    std::cerr << "Failed to load Font!!!" << std::endl;
+			    return;
+		    }
+        }; 
+
 
 
 
@@ -17,7 +26,11 @@ class baseRoom
 
 
         sf::RenderWindow* window;
-        gameState* gameState;
+        gameState currentState;
+
+        sf::Font font;
+
+        bool roomFinished = false;
 };
 
 

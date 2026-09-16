@@ -36,7 +36,7 @@ int main()
 	
 		//Game-states og variable for current state
 		//enum class gameState{Menu, room1, room2, room3, room4, GameOver, Victory};
-		gameState currentGameState = gameState::room4;
+		gameState currentGameState = gameState::Menu;
 
 		//initierer og starter klokke
 		countDown countDown(10.0f);
@@ -45,11 +45,11 @@ int main()
 	//-------- Game Meny Config -----------------------------------------------------
 		
 
-		background menyBAckground("Assets/PNG/pikselBackground.png", width, height);
+		// background menyBAckground("Assets/PNG/pikselBackground.png", width, height);
 		
 
-		character cloud1("Assets/PNG/cloud.png", {100.0,200.0}, {0.2,0.2});
-		cloud1.buildCharacter();
+		// character cloud1("Assets/PNG/cloud.png", {100.0,200.0}, {0.2,0.2});
+		// cloud1.buildCharacter();
 
 	//-------- Room 1 Config  (SunCollect) --------------------------------------------------------
 		//Score count
@@ -59,7 +59,7 @@ int main()
 		Player bob("Assets/PNG/bob.png");
 		bob.buildPlayer();
 
-		//Sol - room1
+		//Sol - room1bjurve
 		sf::Texture texture("Assets/PNG/sun.png");
 		sf::Sprite sprite(texture);
 		sprite.setPosition({800.f,400.f});
@@ -153,30 +153,34 @@ int main()
 			//Tegning av Game Menu-------------------------------------------------------------------------------------------------
 			if(currentGameState == gameState::Menu)
 			{
-				menyBAckground.draw(window);
-				std::cout << "Meny Bakgrunn lastet" << std::endl;
 
-				
-				//cloud1.moveRight();
-				//cloud1.loopLeft({0.0,100.0});
-				cloud1.draw(window);
-			
 
-				//countDown.reset();
-				countDown.reset();
+	
+				gameMeny meny(&window, currentGameState);
+				meny.run();
 
-				//StartGame knapp
-				Button startGame(ButtonSize::medium, sf::Color::White,{750.0f,400.0f});
-				startGame.buildButton();
-				startGame.draw(window);
 
-				screenText startGameText(font, "START GAME", sf::Color::Red, 50);
-				startGameText.buildText();
-				mergeTextButton(startGameText, startGame);
-				startGameText.draw(window);
 
-				//starter spill hvis startGame er trykket
-				if(buttonClicked(window, startGame)){currentGameState = gameState::room1;}
+				// menyBAckground.draw(window);
+				// std::cout << "Meny Bakgrunn lastet" << std::endl;
+
+
+
+				// //countDown.reset();
+				// countDown.reset();
+
+				// //StartGame knapp
+				// Button startGame(ButtonSize::medium, sf::Color::White,{750.0f,400.0f});
+				// startGame.buildButton();
+				// startGame.draw(window);
+
+				// screenText startGameText(font, "START GAME", sf::Color::Red, 50);
+				// startGameText.buildText();
+				// mergeTextButton(startGameText, startGame);
+				// startGameText.draw(window);
+
+				// //starter spill hvis startGame er trykket
+				// if(buttonClicked(window, startGame)){currentGameState = gameState::room1;}
 				
 		
 			}
